@@ -45,7 +45,16 @@ For behavior that already works well, compare V2 with legacy rather than assumin
 
 ## Explicitly not migrated
 
-- The legacy Polar import and the Cloudflare/token system used for it are not part of LOCKED IN V2 and must not be migrated (D-049).
+Legacy Polar AccessLink / Cloudflare integration (D-049) — discontinued, closed:
+
+- The old Polar/Cloudflare integration has been discontinued. According to the user, the Polar connection was disconnected and the external Polar/Cloudflare integration was removed.
+- No migration.
+- No tokens.
+- No Cloudflare Worker.
+- No Polar AccessLink.
+- Not re-implemented in V2 in any form.
+- Running data in V2 is to be solved later natively / through the app's own architecture, including HealthKit where feasible. Feasibility of the native capabilities is still open (see [30_Technical/ARCHITECTURE.md](../30_Technical/ARCHITECTURE.md)).
+- Any mention of Polar/Cloudflare in legacy material is historical reference only.
 
 ## Legacy protection
 

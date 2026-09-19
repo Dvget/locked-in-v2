@@ -52,4 +52,4 @@ This file records explicit project decisions. Do not silently overwrite these de
 | D-046 | future | Training plans may later visualize muscle-group coverage. |
 | D-047 | future | Progress may later aggregate exercise progress by muscle group, without pretending to directly measure muscle growth. |
 | D-048 | provisional | React Navigation (`@react-navigation/native`, `bottom-tabs`, `native-stack`) is used for the first V2 app scaffold. Not a final architecture decision; may be replaced (e.g. by Expo Router) after review. |
-| D-049 | fixed | The legacy Polar import and the Cloudflare/token system used for it are NOT part of LOCKED IN V2 and must not be migrated. |
+| D-049 | fixed | The legacy Polar AccessLink import and the Cloudflare Worker/token integration used for it are permanently discarded. They are not migrated to V2 and not re-implemented. Running data in V2 is to be solved later natively / through the app's own architecture (HealthKit feasibility still open, see ARCHITECTURE.md). |
