@@ -87,3 +87,11 @@ Build 1 (native dependencies batch): run `35463599872`, success, release `build-
 Build 2 (adds `expo-notifications`): run `35465682107`, success (11 min 37 s), release `build-5` = "LOCKED IN 2 – Build 5", the current "Latest". Install this one.
 
 Two builds of the five allowed were used in this rebuild. Later JavaScript-only changes need no new build, only Metro.
+
+## After the first review (same day)
+
+The user reviewed the result: technically good, visually not yet. Corrections made and recorded:
+
+- **Legacy fidelity:** screens are now rebuilt from the legacy SwiftUI code and two real legacy renders (downloaded from the legacy UI-preview workflow artifacts into a scratch folder, not committed). Text descriptions are in `20_Design/DESIGN_FINDINGS_2026-09-19.md`. Lesson: read the legacy view code first, never guess layout.
+- **Logic mapping fixed (D-052 revised):** one start card -> "Workout oder Run?"; category cards -> own detail screens with a last-4-weeks graph; Progress keeps the full history; invented Dashboard tiles removed.
+- **Still open:** screens listed as "not yet aligned" in `STATUS.md`; design direction (separate track); iPhone checklist above is still valid. Builds used: still 2 of 5, since these changes are JavaScript only.

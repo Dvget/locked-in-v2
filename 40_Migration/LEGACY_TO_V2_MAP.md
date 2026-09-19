@@ -12,7 +12,8 @@ Code state per area. "Built" means implemented, type-checked and covered by test
 
 | Area | State |
 |---|---|
-| Dashboard | Built with real data (D-052). Design follows D-050 tokens. |
+| Dashboard | Built after the legacy Home code and render: one start card -> "Workout oder Run?" choice screen, cards Workouts/Runs/Steps/Gewicht -> own detail screens (last 4 weeks graph + week-to-date KPIs), see D-052. Detail screens built from the legacy detail views; "Von Waage übernehmen" missing. |
+| Screens aligned to legacy code so far | Dashboard, choice screen, four detail screens, active workout, plan picker, Settings tiles, run preparation/active/summary, Progress > Training card. Everything else is functional but not yet aligned (see STATUS.md handoff). |
 | Training (active workout) | Built: plan picker, slot flow, previous comparison, progression hint, skip/revisit, alternatives, rest timer, resume, completion summary. Live Activity not built. Not verified on device. |
 | Trainingspläne | Built: list, editor, alternatives, rep-range override, workout type, 30-day history, custom exercises, bundled library with German search. |
 | Running | Built: filter/metrics/splits ported with tests; screens, countdown, spoken cues, checkpoint restore. Elevation not computed. Live Activity and lock-screen controls not built. Not verified on device. |
