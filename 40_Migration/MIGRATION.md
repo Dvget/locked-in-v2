@@ -22,6 +22,11 @@ Reconsider:
 ### Phase 1 — Prove the toolchain
 Prove the Windows-first React Native/Expo workflow and all required iOS capabilities.
 
+Toolchain proof status (2026-09-19, details in [60_Workflow/SETUP_LOG_2026-09-19.md](../60_Workflow/SETUP_LOG_2026-09-19.md)):
+- Web part: successful.
+- Native iOS part: still open.
+- The current test (unsigned iOS Dev Client build on GitHub Actions) is blocked by GitHub Actions billing / spending limit.
+
 ### Phase 2 — Define V2 foundations
 - repository;
 - architecture;

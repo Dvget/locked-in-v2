@@ -30,6 +30,7 @@ Start with:
 
 ## Workflow
 - [60_Workflow/AI_WORKFLOW.md](60_Workflow/AI_WORKFLOW.md)
+- [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md)
 
 ## Archive
 - `90_Archive/` — superseded material only

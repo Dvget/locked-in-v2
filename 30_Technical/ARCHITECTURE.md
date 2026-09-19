@@ -31,6 +31,22 @@ Desired workflow:
 - GitHub/macOS used only where native iOS build is necessary;
 - SideStore/free Apple-account signing workflow if technically viable.
 
+## Proof status (2026-09-19)
+
+Details: [60_Workflow/SETUP_LOG_2026-09-19.md](../60_Workflow/SETUP_LOG_2026-09-19.md)
+
+Confirmed:
+- local development on Windows;
+- Expo Web preview;
+- Metro (including `--dev-client` mode);
+- Claude works directly on local code.
+
+Still open:
+- unsigned Dev Client IPA;
+- SideStore installation;
+- real iPhone Fast Refresh;
+- native iOS features.
+
 ## Native capabilities that must be proven
 
 - background location/running;

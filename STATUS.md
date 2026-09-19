@@ -31,6 +31,17 @@ Required proof includes:
 - checking required native capabilities such as location/background tracking, HealthKit, Live Activities, haptics/audio and local persistence;
 - confirming the workflow stays free.
 
+## Toolchain proof status (as of 2026-09-19)
+
+Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md)
+
+- Web development workflow proven (Windows, Expo Web, Metro, Claude edits local code, browser updates).
+- Expo SDK 57 + `expo-dev-client` set up.
+- GitHub repo `Dvget/locked-in-v2` (private) created; whole V2 folder is one Git repository.
+- First iOS Dev Client build (GitHub Actions run `35449440001`) is blocked by GitHub Billing / Spending Limit; the macOS runner never started.
+- Native iOS Dev Client feasibility remains open (unsigned IPA, SideStore install, iPhone Fast Refresh, native capabilities).
+- A sensible next product/development step can begin in parallel via Expo Web.
+
 ## Product-definition status
 
 The following are sufficiently defined:
