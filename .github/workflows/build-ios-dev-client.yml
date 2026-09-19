@@ -3,6 +3,9 @@ name: Build iOS Dev Client (unsigned)
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write # needed to publish the SideStore release (GITHUB_TOKEN only, no personal token)
+
 jobs:
   build:
     runs-on: macos-latest
@@ -27,6 +30,19 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Read build metadata
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./app.json').expo.version")"
+          BUILD="${{ github.run_number }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          IPA_FILENAME="LOCKED-IN-2_${VERSION}_Build${BUILD}_${SHORT_SHA}.ipa"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "BUILD=$BUILD" >> "$GITHUB_ENV"
+          echo "SHORT_SHA=$SHORT_SHA" >> "$GITHUB_ENV"
+          echo "IPA_FILENAME=$IPA_FILENAME" >> "$GITHUB_ENV"
+          echo "Version $VERSION, build $BUILD, file $IPA_FILENAME"
 
       - name: Expo prebuild (iOS)
         run: npx expo prebuild --platform ios --no-install
@@ -102,7 +118,7 @@ jobs:
           rm -rf Payload
           mkdir Payload
           cp -R "$APP_PATH" Payload/
-          zip -qry "${{ steps.detect.outputs.scheme }}-dev-client-unsigned.ipa" Payload
+          zip -qry "$IPA_FILENAME" Payload
 
           ls -lh ./*.ipa
 
@@ -113,3 +129,42 @@ jobs:
           path: app/ios/*.ipa
           if-no-files-found: error
           retention-days: 14
+
+      - name: Prepare SideStore feed
+        working-directory: .
+        run: |
+          set -euo pipefail
+          TAG="build-${BUILD}"
+          RELEASE_BASE="https://github.com/${GITHUB_REPOSITORY}/releases"
+          IPA_SIZE="$(stat -f%z "app/ios/${IPA_FILENAME}")"
+          mkdir -p dist
+          cp "app/ios/${IPA_FILENAME}" dist/
+          cp app/assets/icon.png dist/icon.png
+          python3 scripts/generate_sidestore_source.py \
+            --version "$VERSION" \
+            --build "$BUILD" \
+            --latest-base-url "${RELEASE_BASE}/latest/download" \
+            --download-url "${RELEASE_BASE}/download/${TAG}/${IPA_FILENAME}" \
+            --ipa-size "$IPA_SIZE" \
+            --release-date "$(date -u +%Y-%m-%d)" \
+            --release-notes "Testbuild (Dev Client, unsigned). Build ${BUILD}, Commit ${SHORT_SHA}." \
+            --output dist/source.json
+          python3 -m json.tool dist/source.json > /dev/null
+          test -s "dist/${IPA_FILENAME}"
+          test -s dist/icon.png
+          cat dist/source.json
+
+      - name: Publish GitHub release (SideStore source)
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="build-${BUILD}"
+          gh release create "$TAG" \
+            "dist/${IPA_FILENAME}" dist/source.json dist/icon.png \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "LOCKED IN 2 – Build ${BUILD}" \
+            --notes "Unsigned dev client build ${BUILD} (${SHORT_SHA}). Install via SideStore." \
+            --latest

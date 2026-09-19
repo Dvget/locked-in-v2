@@ -53,6 +53,15 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 - Real data connection (steps, weight, workouts, runs, trends, PR logic) remains open.
 - Checked on Expo Web and TypeScript only; not yet run on a native iOS Dev Client.
 
+## Next steps (handoff for the next chat)
+
+Keep this list current after every larger work block. A new chat starts from here.
+
+1. First iOS Dev Client proof: run `Build iOS Dev Client (unsigned)` on GitHub (repo is temporarily public for free Actions minutes), install the IPA via SideStore. App display name is "LOCKED IN 2", bundle id `app.lockedin.v2` (separate from the legacy app `app.lockedin.tracker`, so it does not overwrite it).
+2. After a successful proof: set the repo back to private (user does this in GitHub Settings) and decide how to keep builds cheap.
+3. Rebuild the legacy app 1:1 in slices while applying V2 decisions; order and mapping in `40_Migration/LEGACY_TO_V2_MAP.md`. Open decision: persistence technology (recommended: local database on the phone).
+4. Open: whether to rename the app back to "LOCKED IN" later (display name is easy to change; the bundle id decides whether it replaces the old app or installs next to it).
+
 ## Product-definition status
 
 The following are sufficiently defined:
