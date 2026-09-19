@@ -47,6 +47,27 @@ Still open:
 - real iPhone Fast Refresh;
 - native iOS features.
 
+## App scaffold (2026-09-19, provisional)
+
+Minimal navigable structure under `app/src`, no feature logic yet:
+
+```
+app/App.tsx                  SafeAreaProvider + RootNavigator
+app/src/navigation/          RootNavigator (native stack), TabNavigator (bottom tabs)
+app/src/screens/             Dashboard, Progress, Settings, Workout, Running, WeeklyReport
+app/src/components/          Screen, Card, PlaceholderScreen
+app/src/theme/               colors, spacing, radius (minimal, not a design system)
+app/src/types/               navigation param lists
+```
+
+- Navigation: React Navigation v7 (provisional, D-048).
+  - Bottom tabs: Dashboard / Progress / Settings (D-010).
+  - Root stack: Tabs, Workout, Running, WeeklyReport. Workout, Running and Weekly Report are opened from Dashboard; Weekly Report is not a tab.
+- Dependencies added: `@react-navigation/native`, `@react-navigation/bottom-tabs`, `@react-navigation/native-stack`, `react-native-screens`, `react-native-safe-area-context`. The last two contain native code, so a native Dev Client rebuild is needed for them.
+- Visual state is placeholder only; card style and colors remain open (D-038, D-041). Orange is used only as an accent (active tab).
+- Not yet included: state management, persistence, charts, icons, HealthKit, workout/running logic.
+- Verified: `tsc --noEmit` passes; Expo web export succeeds; in the web preview all six screens are reachable and all three tabs switch. No native iOS build was run.
+
 ## Native capabilities that must be proven
 
 - background location/running;

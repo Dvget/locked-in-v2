@@ -51,3 +51,5 @@ This file records explicit project decisions. Do not silently overwrite these de
 | D-045 | future | A web dashboard/interface may be added later as a learning/extension project. |
 | D-046 | future | Training plans may later visualize muscle-group coverage. |
 | D-047 | future | Progress may later aggregate exercise progress by muscle group, without pretending to directly measure muscle growth. |
+| D-048 | provisional | React Navigation (`@react-navigation/native`, `bottom-tabs`, `native-stack`) is used for the first V2 app scaffold. Not a final architecture decision; may be replaced (e.g. by Expo Router) after review. |
+| D-049 | fixed | The legacy Polar import and the Cloudflare/token system used for it are NOT part of LOCKED IN V2 and must not be migrated. |

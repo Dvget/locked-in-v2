@@ -43,6 +43,10 @@ Likely order should be decided after architecture proof.
 ### Phase 4 — Validate against legacy
 For behavior that already works well, compare V2 with legacy rather than assuming the rewrite is correct.
 
+## Explicitly not migrated
+
+- The legacy Polar import and the Cloudflare/token system used for it are not part of LOCKED IN V2 and must not be migrated (D-049).
+
 ## Legacy protection
 
 The legacy app remains usable and should not be destabilized during V2 development.
