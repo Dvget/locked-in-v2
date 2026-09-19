@@ -47,6 +47,7 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 - Minimal navigable app structure exists under `app/src` (Dashboard, Progress, Settings tabs; Workout, Running, Weekly Report screens). Placeholders only, no feature logic. See [30_Technical/ARCHITECTURE.md](30_Technical/ARCHITECTURE.md).
 - React Navigation is used provisionally (D-048).
 - Polar import / Cloudflare token system will not be migrated (D-049).
+- System appearance is forced to dark (`userInterfaceStyle: "dark"` in `app/app.json`), consistent with D-033.
 - Checked on Expo Web and TypeScript only; not yet run on a native iOS Dev Client.
 
 ## Product-definition status
