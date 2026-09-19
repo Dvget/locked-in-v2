@@ -29,10 +29,11 @@ type ButtonProps = {
   icon?: ReactNode;
   /** Trailing glyph */
   iconRight?: ReactNode;
+  labelColor?: string;
   height?: number;
 };
 
-export function Button({ label, onPress, variant = 'secondary', accent = colors.accent, disabled, style, icon, iconRight, height }: ButtonProps) {
+export function Button({ label, onPress, variant = 'secondary', accent = colors.accent, disabled, style, icon, iconRight, height, labelColor }: ButtonProps) {
   const primary = variant === 'primary';
   const danger = variant === 'danger';
   return (
@@ -53,7 +54,7 @@ export function Button({ label, onPress, variant = 'secondary', accent = colors.
       ]}
     >
       {icon ? <View style={styles.buttonIcon}>{icon}</View> : null}
-      <Text style={[styles.buttonText, primary && { color: '#000' }, danger && { color: colors.bad }]}>{label}</Text>
+      <Text style={[styles.buttonText, primary && { color: '#000' }, danger && { color: colors.bad }, labelColor ? { color: labelColor } : null]}>{label}</Text>
       {iconRight ? <View style={styles.buttonIcon}>{iconRight}</View> : null}
     </Pressable>
   );

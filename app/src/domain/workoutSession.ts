@@ -35,6 +35,7 @@ export function startSession(
   plan: TrainingPlan,
   bodyWeightKg: number,
   now: Ms = Date.now(),
+  chosen: Record<number, string> = {},
 ): { workout: WorkoutRecord; state: WorkoutSessionState } {
   const workout: WorkoutRecord = {
     id: newId(),
@@ -45,11 +46,11 @@ export function startSession(
     bodyWeightSnapshot: bodyWeightKg,
     planID: plan.id,
     planName: plan.name,
-    plannedSetCounts: Object.fromEntries(plan.entries.map((e) => [e.exerciseID, e.sets])),
+    plannedSetCounts: Object.fromEntries(plan.entries.map((e, i) => [chosen[i] ?? e.exerciseID, e.sets])),
   };
   return {
     workout,
-    state: { workoutID: workout.id, plan: structuredCloneSafe(plan), slotIndex: 0, chosen: {}, timerEndsAt: null },
+    state: { workoutID: workout.id, plan: structuredCloneSafe(plan), slotIndex: 0, chosen: { ...chosen }, timerEndsAt: null },
   };
 }
 

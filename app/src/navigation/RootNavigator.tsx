@@ -43,7 +43,7 @@ export function RootNavigator() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Workout" component={WorkoutScreen} />
-        <Stack.Screen name="Running" component={RunningScreen} />
+        <Stack.Screen name="Running" component={RunningScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="WeeklyReport"
           component={WeeklyReportScreen}

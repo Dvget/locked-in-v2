@@ -177,3 +177,97 @@ export function ResetIcon({ color, size = 22 }: IconProps) {
     </Svg>
   );
 }
+
+export function DriveIcon({ color, size = 30 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 32 32">
+      <Rect x={3} y={9} width={26} height={14} rx={4} fill={color} />
+      <Circle cx={23.5} cy={16} r={1.8} fill="#000" />
+      <Rect x={7} y={14.6} width={9} height={2.8} rx={1.4} fill="#000" opacity={0.6} />
+    </Svg>
+  );
+}
+
+export function InfoIcon({ color, size = 30 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 32 32">
+      <Circle cx={16} cy={16} r={13} fill={color} />
+      <Circle cx={16} cy={9.8} r={1.9} fill="#000" />
+      <Rect x={14.3} y={13.5} width={3.4} height={10} rx={1.7} fill="#000" />
+    </Svg>
+  );
+}
+
+export function TargetIcon({ color, size = 30 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 32 32">
+      <Circle cx={16} cy={16} r={12.5} stroke={color} strokeWidth={3} fill="none" />
+      <Circle cx={16} cy={16} r={6.5} stroke={color} strokeWidth={3} fill="none" />
+      <Circle cx={16} cy={16} r={2} fill={color} />
+    </Svg>
+  );
+}
+
+export function PauseIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Rect x={5.5} y={4} width={4.5} height={16} rx={1.6} fill={color} />
+      <Rect x={14} y={4} width={4.5} height={16} rx={1.6} fill={color} />
+    </Svg>
+  );
+}
+
+export function StopIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Rect x={5} y={5} width={14} height={14} rx={2.6} fill={color} />
+    </Svg>
+  );
+}
+
+export function SpeakerIcon({ color, size = 22, muted = false }: IconProps & { muted?: boolean }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill={color} />
+      {muted ? (
+        <Path d="M15.5 9.5l5 5M20.5 9.5l-5 5" {...stroke(color, 2.2)} />
+      ) : (
+        <>
+          <Path d="M15.5 9a4 4 0 0 1 0 6" {...stroke(color, 2.2)} />
+          <Path d="M18 6.5a7.5 7.5 0 0 1 0 11" {...stroke(color, 2.2)} />
+        </>
+      )}
+    </Svg>
+  );
+}
+
+export function LocationIcon({ color, size = 50, filled = true }: IconProps & { filled?: boolean }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M20.5 3.5L3.8 10.6a.8.8 0 0 0 .1 1.5l6.6 2.3a.8.8 0 0 1 .5.5l2.3 6.6a.8.8 0 0 0 1.5.1z"
+        fill={filled ? color : 'none'}
+        stroke={color}
+        strokeWidth={1.8}
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+export function TimerIcon({ color, size = 26 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={12} cy={13.5} r={7.5} {...stroke(color, 2.2)} />
+      <Path d="M12 13.5V9M9.5 3h5" {...stroke(color, 2.2)} />
+    </Svg>
+  );
+}
+
+export function BigCheckIcon({ color, size = 40 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4.5 12.5l5 5L19.5 6.5" {...stroke(color, 3.4)} />
+    </Svg>
+  );
+}
