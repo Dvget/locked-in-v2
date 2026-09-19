@@ -44,6 +44,18 @@ jobs:
           echo "IPA_FILENAME=$IPA_FILENAME" >> "$GITHUB_ENV"
           echo "Version $VERSION, build $BUILD, file $IPA_FILENAME"
 
+      - name: Set build number in app config (runner only, not committed)
+        run: |
+          set -euo pipefail
+          node -e "
+            const fs = require('fs');
+            const config = JSON.parse(fs.readFileSync('app.json', 'utf8'));
+            config.expo.ios = config.expo.ios || {};
+            config.expo.ios.buildNumber = process.env.BUILD;
+            fs.writeFileSync('app.json', JSON.stringify(config, null, 2));
+          "
+          grep -n buildNumber app.json
+
       - name: Expo prebuild (iOS)
         run: npx expo prebuild --platform ios --no-install
 
@@ -103,6 +115,20 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             build
+
+      - name: Verify built version metadata
+        working-directory: app/ios
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find build/Build/Products/Debug-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
+          PLIST="$APP_PATH/Info.plist"
+          BUILT_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$PLIST")"
+          BUILT_BUILD="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$PLIST")"
+          BUILT_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$PLIST")"
+          echo "Built: id=$BUILT_ID version=$BUILT_VERSION build=$BUILT_BUILD (expected $VERSION / $BUILD)"
+          test "$BUILT_VERSION" = "$VERSION"
+          test "$BUILT_BUILD" = "$BUILD"
+          test "$BUILT_ID" = "app.lockedin.v2"
 
       - name: Package IPA
         working-directory: app/ios
