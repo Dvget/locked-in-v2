@@ -73,6 +73,8 @@ Slices, in this order:
 
 Open decisions: persistence technology (default: `expo-sqlite` unless the user objects), Dashboard detail screens vs Progress only, whether Weekly Report also auto-opens once per week, Bluetooth scale import, later rename to "LOCKED IN" (display name is easy; the bundle id decides whether V2 replaces the legacy app).
 
+Ideas, not decided: (1) Expo Go (free App Store app) could run JS-only UI work on the iPhone with Fast Refresh without any build or signing; it does not support all native parts (for example Live Activities, HealthKit), and support for SDK 57 was not checked. (2) A Release build option in the workflow for the everyday, standalone app. (3) Other free routes to run own apps on iOS (for example Sideloadly on Windows) exist, but SideStore is the chosen route.
+
 Housekeeping: Actions minutes are limited for private repos; ask before dispatching builds. Builds are only needed when native dependencies change (for example `expo-sqlite`).
 
 ## Product-definition status
