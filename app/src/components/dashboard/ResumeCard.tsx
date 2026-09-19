@@ -3,11 +3,10 @@ import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useStore } from '../../data/store';
+import { ACTIVE_RUN_KEY } from '../../domain/running';
 import { colors } from '../../theme';
 import { Card } from '../Card';
 import { Chevron } from '../Chevron';
-
-export const ACTIVE_RUN_KEY = 'activeRun';
 
 type Props = {
   onResumeWorkout: () => void;

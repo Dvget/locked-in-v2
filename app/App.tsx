@@ -1,4 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
+import './src/native/runEngine';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppFrame } from './src/components/AppFrame';

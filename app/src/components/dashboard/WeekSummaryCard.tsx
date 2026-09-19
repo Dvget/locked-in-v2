@@ -7,6 +7,7 @@ type Metric = {
   label: string;
   value: string;
   unit?: string;
+  color?: string;
 };
 
 type Props = {
@@ -22,7 +23,7 @@ export function WeekSummaryCard({ metrics }: Props) {
           style={[styles.cell, index > 0 && styles.cellDivider]}
         >
           <Text style={styles.label}>{metric.label}</Text>
-          <Text style={styles.value} numberOfLines={1}>
+          <Text style={[styles.value, metric.color ? { color: metric.color } : null]} numberOfLines={1}>
             {metric.value}
             {metric.unit ? <Text style={styles.unit}> {metric.unit}</Text> : null}
           </Text>

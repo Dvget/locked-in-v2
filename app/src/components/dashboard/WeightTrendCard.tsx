@@ -9,11 +9,12 @@ type Props = {
   change: string;
   points: readonly number[];
   changeColor?: string;
+  onPress?: () => void;
 };
 
-export function WeightTrendCard({ value, change, points, changeColor }: Props) {
+export function WeightTrendCard({ value, change, points, changeColor, onPress }: Props) {
   return (
-    <Card style={styles.card}>
+    <Card style={styles.card} onPress={onPress}>
       <View style={styles.text}>
         <Text style={styles.label}>Gewicht</Text>
         <Text style={styles.value}>{value}</Text>

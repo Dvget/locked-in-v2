@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { Card } from '../../components/Card';
 import { Screen } from '../../components/Screen';
-import { Muted, SectionLabel, Segmented, Stepper } from '../../components/ui';
+import { Button, Muted, SectionLabel, Segmented, Stepper } from '../../components/ui';
 import { useStore } from '../../data/store';
 import type { WeightDirection } from '../../data/repository';
+import { requestStepPermission, stepsAvailable, syncSteps } from '../../native/steps';
 import { colors } from '../../theme';
 
 export function GoalsScreen() {
-  const { settings, updateSettings } = useStore();
+  const store = useStore();
+  const { settings, updateSettings } = store;
+  const [stepMessage, setStepMessage] = useState<string | null>(null);
   return (
     <Screen>
       <View style={{ gap: 6 }}>
@@ -48,6 +52,40 @@ export function GoalsScreen() {
         onMinus={() => updateSettings({ weeklyStepGoal: Math.max(10_000, settings.weeklyStepGoal - 5_000) })}
         onPlus={() => updateSettings({ weeklyStepGoal: settings.weeklyStepGoal + 5_000 })}
       />
+
+      <SectionLabel>Schritte vom iPhone</SectionLabel>
+      <Segmented
+        options={[
+          { value: 'off', label: 'Aus' },
+          { value: 'on', label: 'An' },
+        ]}
+        value={settings.stepsEnabled ? 'on' : 'off'}
+        onChange={async (v) => {
+          if (v === 'off') {
+            await updateSettings({ stepsEnabled: false });
+            return;
+          }
+          if (!(await stepsAvailable())) {
+            setStepMessage('Schrittzählung ist auf diesem Gerät nicht verfügbar.');
+            return;
+          }
+          if (!(await requestStepPermission())) {
+            setStepMessage('Bewegungszugriff wurde nicht erlaubt (iPhone-Einstellungen).');
+            return;
+          }
+          await updateSettings({ stepsEnabled: true });
+          const days = await syncSteps(store);
+          setStepMessage(`${days} Tage gelesen.`);
+        }}
+      />
+      {settings.stepsEnabled ? (
+        <Button
+          label="Jetzt synchronisieren"
+          onPress={async () => setStepMessage(`${await syncSteps(store)} Tage gelesen.`)}
+        />
+      ) : null}
+      {stepMessage ? <Muted>{stepMessage}</Muted> : null}
+      <Muted>Es zählen nur abgeschlossene Tage im Durchschnitt. Das iPhone liefert bis zu 7 Tage rückwirkend.</Muted>
 
       <SectionLabel>Wiederholungsbereich</SectionLabel>
       <Card>

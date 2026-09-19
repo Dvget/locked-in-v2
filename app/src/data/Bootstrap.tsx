@@ -1,8 +1,11 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, AppState, StyleSheet, Text, View } from 'react-native';
 
 import { defaultFullBodyPlan, setCustomExercises, type CustomExercise } from '../domain/exercises';
 import { colors } from '../theme';
+import { ACTIVE_RUN_KEY } from '../domain/running';
+import { runEngine } from '../native/runEngine';
+import { syncStepsIfNeeded } from '../native/steps';
 import { useStore } from './store';
 
 const CUSTOM_EXERCISES_KEY = 'customExercises';
@@ -16,6 +19,8 @@ export function Bootstrap({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!store.ready || store.error || done.current) return;
     done.current = true;
+    // Crash-safe checkpoints of a running run go to the same store.
+    runEngine.setPersist((json) => store.setKV(ACTIVE_RUN_KEY, json));
     (async () => {
       const raw = await store.getKV(CUSTOM_EXERCISES_KEY);
       if (raw) {
@@ -32,6 +37,18 @@ export function Bootstrap({ children }: { children: ReactNode }) {
       }
     })().catch(() => undefined);
   }, [store]);
+
+  // Steps: sync when the app opens and each time it returns to the foreground (at most every 30 minutes).
+  const storeRef = useRef(store);
+  storeRef.current = store;
+  useEffect(() => {
+    if (!store.ready || store.error) return;
+    syncStepsIfNeeded(storeRef.current).catch(() => undefined);
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') syncStepsIfNeeded(storeRef.current).catch(() => undefined);
+    });
+    return () => sub.remove();
+  }, [store.ready, store.error]);
 
   if (!store.ready) {
     return (

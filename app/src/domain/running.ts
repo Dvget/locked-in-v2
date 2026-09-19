@@ -4,6 +4,9 @@
 import type { Ms } from './dates';
 import type { RunTrackPoint } from './types';
 
+/** KV key of the crash-safe run checkpoint; also marks an unfinished run on the dashboard. */
+export const ACTIVE_RUN_KEY = 'activeRun';
+
 export interface RunTrackingConfiguration {
   algorithmVersion: string;
   /** seconds */

@@ -1,6 +1,7 @@
 // Dashboard view model (D-012, D-037): current week plus roughly the last four weeks. Pure and testable.
 import {
   addDays,
+  daysBetween,
   isInside,
   remainingDaysInWeek,
   startOfDay,
@@ -13,6 +14,7 @@ import {
   preferredStepSamples,
   recordedStepAverage,
   stepComparisonChange,
+  stepProgressStatus,
   weeklyGoalStatus,
   weekToDateCountComparison,
   weightPoints,
@@ -34,6 +36,7 @@ export interface DashboardModel {
   trainingCounts4Weeks: number[];
   trainingTotal4Weeks: number;
   trainingTrend: 'up' | 'flat' | 'down' | 'none';
+  stepStatus: Status | null;
   workoutGoalStatus: Status;
   runGoalStatus: Status;
   workoutChange: number | null;
@@ -119,6 +122,8 @@ export function buildDashboard(data: AppData, settings: Settings, now: Ms = Date
   const trainingTrend =
     trainingTotal4Weeks === 0 ? 'none' : secondHalf > firstHalf ? 'up' : secondHalf < firstHalf ? 'down' : 'flat';
 
+  const stepStatus =
+    stepsThisWeek > 0 ? stepProgressStatus(stepsThisWeek, daysBetween(week.start, now) + 1, settings.weeklyStepGoal) : null;
   const remaining = remainingDaysInWeek(now);
   const workoutGoalStatus = weeklyGoalStatus({
     completed: workoutsThisWeek,
@@ -154,6 +159,7 @@ export function buildDashboard(data: AppData, settings: Settings, now: Ms = Date
     trainingCounts4Weeks,
     trainingTotal4Weeks,
     trainingTrend,
+    stepStatus,
     workoutGoalStatus,
     runGoalStatus,
     workoutChange,
