@@ -1,30 +1,41 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import type { ReactNode } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import { colors, radius, spacing } from '../theme';
 
 type Props = {
-  title: string;
+  title?: string;
   description?: string;
+  children?: ReactNode;
   onPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
-export function Card({ title, description, onPress }: Props) {
+export function Card({ title, description, children, onPress, style }: Props) {
   const content = (
     <>
-      <Text style={styles.title}>{title}</Text>
+      {title ? <Text style={styles.title}>{title}</Text> : null}
       {description ? <Text style={styles.description}>{description}</Text> : null}
+      {children}
     </>
   );
 
   if (!onPress) {
-    return <View style={styles.card}>{content}</View>;
+    return <View style={[styles.card, style]}>{content}</View>;
   }
 
   return (
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.card, style, pressed && styles.pressed]}
     >
       {content}
     </Pressable>

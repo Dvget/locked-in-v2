@@ -48,6 +48,9 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 - React Navigation is used provisionally (D-048).
 - Polar import / Cloudflare token system will not be migrated (D-049).
 - System appearance is forced to dark (`userInterfaceStyle: "dark"` in `app/app.json`), consistent with D-033.
+- Dashboard V1 implemented with static dummy data (`app/src/data/dashboardDummy.ts`): header, Workout/Running start tiles, week summary, weight and training mini trends, Weekly Report card, last achievement. No real data connection yet.
+- Mobile-width web preview: on web the app is limited to 430 px (`AppFrame`); native renders full width.
+- Real data connection (steps, weight, workouts, runs, trends, PR logic) remains open.
 - Checked on Expo Web and TypeScript only; not yet run on a native iOS Dev Client.
 
 ## Product-definition status
