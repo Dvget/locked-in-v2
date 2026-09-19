@@ -15,6 +15,7 @@ import type { Range, RunSeries } from '../domain/analytics';
 import { defaultWeightRange } from '../domain/analytics';
 import { formatKgText, formatSignedKg, weightTone } from '../domain/dashboard';
 import { buildRunProgress, buildTrainingProgress, buildWeightProgress } from '../domain/progress';
+import { percentText } from '../domain/weeklyReport';
 import { formatClock } from '../domain/workoutSession';
 import { colors, toneColor } from '../theme';
 import type { RootStackParamList, TabParamList } from '../types/navigation';
@@ -60,23 +61,7 @@ export function ProgressScreen({ navigation }: Props) {
 
       {category === 'training' ? (
         <>
-          <Card>
-            <SectionLabel>Seit Beginn</SectionLabel>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
-              <Stat label="Einheiten" value={String(training.workoutCount)} />
-              <Stat label="Sätze" value={de(training.setCount)} />
-              <Stat label="Volumen" value={`${de(training.totalVolumeKg / 1000, 1)} t`} />
-              <Stat label="Zeit" value={hours(training.totalDurationSeconds)} />
-            </View>
-          </Card>
-          <Card>
-            <SectionLabel>Trainings-Index (Start = 100)</SectionLabel>
-            <LineChart
-              points={training.indexSeries.map((p) => ({ x: p.date, y: p.value, label: p.label }))}
-              format={(y) => de(y, 1)}
-              emptyText="Der Index braucht mindestens zwei Trainings mit gleicher Übung."
-            />
-          </Card>
+          <TrainingChartCard training={training} />
           <SectionLabel>Übungen</SectionLabel>
           {training.exercises.length === 0 ? <Muted>Noch keine Übungen geloggt.</Muted> : null}
           {training.exercises.map((e) => (
@@ -175,6 +160,66 @@ export function ProgressScreen({ navigation }: Props) {
         <Text style={{ color: colors.textMuted, fontSize: 20 }}>›</Text>
       </Row>
     </Screen>
+  );
+}
+
+const dateShort = (ms: number) => new Date(ms).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+
+/** Legacy Workouts detail layout: switch Index / Gesamtgewicht, big value + trend, chart with axis, totals. */
+function TrainingChartCard({ training }: { training: ReturnType<typeof buildTrainingProgress> }) {
+  const [metric, setMetric] = useState<'index' | 'weight'>('index');
+  const series = metric === 'index' ? training.indexSeries : training.volumeSeries;
+  const first = series[0]?.value ?? null;
+  const last = series[series.length - 1]?.value ?? null;
+  const trend = first !== null && last !== null && first > 0 ? (last / first - 1) * 100 : null;
+  const valueText = last === null ? '–' : metric === 'index' ? de(last, 1) : `${de(last)} kg`;
+  return (
+    <>
+      <Card style={{ gap: 12 }}>
+        <SectionLabel>Verlauf</SectionLabel>
+        <Segmented<'index' | 'weight'>
+          neutral
+          options={[
+            { value: 'index', label: 'Index' },
+            { value: 'weight', label: 'Gesamtgewicht' },
+          ]}
+          value={metric}
+          onChange={setMetric}
+        />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <View>
+            <SectionLabel>{metric === 'index' ? 'Index' : 'Gesamtgewicht'}</SectionLabel>
+            <Text style={{ color: colors.accent, fontSize: 40, fontWeight: '700', fontVariant: ['tabular-nums'] }}>{valueText}</Text>
+          </View>
+          <View style={{ alignItems: 'flex-end' }}>
+            <SectionLabel>Trend</SectionLabel>
+            <Text style={{ color: trend === null ? colors.textMuted : trend >= 0 ? colors.good : colors.bad, fontSize: 28, fontWeight: '600' }}>
+              {trend === null ? '–' : percentText(trend)}
+            </Text>
+          </View>
+        </View>
+        <LineChart
+          height={220}
+          points={series.map((p) => ({ x: p.date, y: p.value, label: p.label }))}
+          axis={{ yFormat: (y) => de(y, metric === 'index' ? 1 : 0), xFormat: dateShort }}
+          emptyText="Der Index braucht mindestens zwei Trainings mit gleicher Übung."
+        />
+      </Card>
+      <Card>
+        <View style={{ flexDirection: 'row' }}>
+          <View style={{ flex: 1, gap: 4 }}>
+            <SectionLabel>Einheiten</SectionLabel>
+            <Text style={{ color: colors.text, fontSize: 26, fontWeight: '700' }}>{training.workoutCount}</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 14 }}>{de(training.setCount)} Sätze</Text>
+          </View>
+          <View style={{ flex: 1, gap: 4 }}>
+            <SectionLabel>Gesamtgewicht</SectionLabel>
+            <Text style={{ color: colors.text, fontSize: 26, fontWeight: '700' }}>{de(training.totalVolumeKg)} kg</Text>
+            <Text style={{ color: colors.textMuted, fontSize: 14 }}>{hours(training.totalDurationSeconds)}</Text>
+          </View>
+        </View>
+      </Card>
+    </>
   );
 }
 

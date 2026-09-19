@@ -81,3 +81,18 @@ export function ticks(min: number, max: number, count = 3): number[] {
   if (count < 2 || max <= min) return [min];
   return Array.from({ length: count }, (_, i) => min + ((max - min) * i) / (count - 1));
 }
+
+/** Round axis values (1, 2, 5 x 10^n steps) that cover [min, max], like the legacy charts (100, 105, 110 ...). */
+export function niceTicks(min: number, max: number, target = 5): number[] {
+  if (!(max > min)) return [min];
+  const rough = (max - min) / Math.max(1, target - 1);
+  const magnitude = 10 ** Math.floor(Math.log10(rough));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * magnitude).find((s) => s >= rough * 0.8) ?? 10 * magnitude;
+  const start = Math.floor(min / step) * step;
+  const out: number[] = [];
+  for (let v = start; v < max + step; v += step) {
+    out.push(Math.round(v / step) * step);
+    if (v >= max) break;
+  }
+  return out;
+}

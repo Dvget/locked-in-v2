@@ -1,12 +1,13 @@
 // Minimal calm charts drawn with react-native-svg (no chart library).
-import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
-import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
+import React, { useMemo, useState } from 'react';
+import { Platform, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
+import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 
 import {
   areaPath,
   linePath,
   nearestIndex,
+  niceTicks,
   paddedRange,
   scalePoints,
   ticks,
@@ -23,18 +24,28 @@ type LineProps = {
   /** Formats the axis tick labels (defaults to format). */
   emptyText?: string;
   onSelect?: (point: ChartPoint | null) => void;
+  /** Legacy style: value labels on the right, dates below, plain line with dots, no read-out row. */
+  axis?: { yFormat: (y: number) => string; xFormat: (x: number) => string };
 };
 
+const FONT = Platform.OS === 'web' ? 'system-ui, -apple-system, sans-serif' : undefined;
 const PADDING = { top: 12, right: 12, bottom: 12, left: 12 };
+const AXIS_PADDING = { top: 14, right: 50, bottom: 28, left: 12 };
 
-export function LineChart({ points, color = colors.accent, height = 160, format = (y) => String(y), emptyText, onSelect }: LineProps) {
+export function LineChart({ points, color = colors.accent, height = 160, format = (y) => String(y), emptyText, onSelect, axis }: LineProps) {
+  const padding = axis ? AXIS_PADDING : PADDING;
   const [width, setWidth] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const layout = useMemo(() => ({ width, height, padding: PADDING }), [width, height]);
-  const range = useMemo(() => paddedRange(points.map((p) => p.y)), [points]);
+  const layout = useMemo(() => ({ width, height, padding }), [width, height, padding]);
+  const range = useMemo(() => {
+    const padded = paddedRange(points.map((p) => p.y));
+    if (!axis) return padded;
+    const nice = niceTicks(padded.min, padded.max, 5);
+    return { min: nice[0], max: nice[nice.length - 1] };
+  }, [points, axis]);
   const scaled = useMemo(() => scalePoints(points, layout, range), [points, layout, range]);
-  const gridValues = ticks(range.min, range.max, 3);
-  const baseline = height - PADDING.bottom;
+  const gridValues = axis ? niceTicks(range.min, range.max, 5) : ticks(range.min, range.max, 3);
+  const baseline = height - padding.bottom;
   const gradientId = useMemo(() => `g${Math.random().toString(36).slice(2, 8)}`, []);
 
   const pick = (e: GestureResponderEvent) => {
@@ -56,10 +67,12 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
 
   return (
     <View>
-      <View style={styles.readout}>
-        <Text style={styles.readoutValue}>{sel ? format(sel.point.y) : ''}</Text>
-        <Text style={styles.readoutLabel}>{sel?.point.label ?? ''}</Text>
-      </View>
+      {axis ? null : (
+        <View style={styles.readout}>
+          <Text style={styles.readoutValue}>{sel ? format(sel.point.y) : ''}</Text>
+          <Text style={styles.readoutLabel}>{sel?.point.label ?? ''}</Text>
+        </View>
+      )}
       <View
         onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
         onStartShouldSetResponder={() => true}
@@ -78,16 +91,34 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
             </Defs>
             {gridValues.map((v, i) => {
               const y = scalePoints([{ x: 0, y: v }], layout, range)[0].py;
-              return <Line key={i} x1={PADDING.left} x2={width - PADDING.right} y1={y} y2={y} stroke={colors.border} strokeWidth={1} />;
+              return (
+                <React.Fragment key={i}>
+                  <Line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke={colors.border} strokeWidth={1} />
+                  {axis ? (
+                    <SvgText x={width - padding.right + 8} y={y + 4} fill={colors.textMuted} fontSize={12} fontFamily={FONT}>
+                      {axis.yFormat(v)}
+                    </SvgText>
+                  ) : null}
+                </React.Fragment>
+              );
             })}
-            {scaled.length > 1 ? <Path d={areaPath(scaled, baseline)} fill={`url(#${gradientId})`} /> : null}
+            {scaled.length > 1 && !axis ? <Path d={areaPath(scaled, baseline)} fill={`url(#${gradientId})`} /> : null}
             {scaled.length > 1 ? (
               <Path d={linePath(scaled)} stroke={color} strokeWidth={2.5} fill="none" strokeLinejoin="round" strokeLinecap="round" />
             ) : null}
             {scaled.length <= 40
               ? scaled.map((s, i) => <Circle key={i} cx={s.px} cy={s.py} r={i === selected ? 5 : 3} fill={color} />)
               : null}
-            {sel ? <Line x1={sel.px} x2={sel.px} y1={PADDING.top} y2={baseline} stroke={color} strokeOpacity={0.35} strokeWidth={1} /> : null}
+            {sel ? <Line x1={sel.px} x2={sel.px} y1={padding.top} y2={baseline} stroke={color} strokeOpacity={0.35} strokeWidth={1} /> : null}
+            {axis
+              ? [0, Math.floor((scaled.length - 1) / 2), scaled.length - 1]
+                  .filter((v, i, a) => a.indexOf(v) === i)
+                  .map((i) => (
+                    <SvgText key={'x' + i} x={scaled[i].px} y={height - 6} fill={colors.textMuted} fontSize={12} fontFamily={FONT} textAnchor="middle">
+                      {axis.xFormat(scaled[i].point.x)}
+                    </SvgText>
+                  ))
+              : null}
             {sel ? <Circle cx={sel.px} cy={sel.py} r={6} fill={colors.background} stroke={color} strokeWidth={2.5} /> : null}
           </Svg>
         ) : null}

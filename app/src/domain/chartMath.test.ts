@@ -31,3 +31,15 @@ describe('chart math', () => {
     expect(ticks(0, 10, 3)).toEqual([0, 5, 10]);
   });
 });
+
+describe('nice ticks', () => {
+  it('uses round steps that cover the range', async () => {
+    const { niceTicks } = await import('./chartMath');
+    expect(niceTicks(100, 120.4, 5)).toEqual([100, 105, 110, 115, 120, 125]);
+    expect(niceTicks(99.1, 117.2, 5)).toEqual([95, 100, 105, 110, 115, 120]);
+    expect(niceTicks(5, 5)).toEqual([5]);
+    const t = niceTicks(0, 9, 4);
+    expect(t[0]).toBeLessThanOrEqual(0);
+    expect(t[t.length - 1]).toBeGreaterThanOrEqual(9);
+  });
+});

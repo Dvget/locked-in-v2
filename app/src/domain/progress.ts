@@ -33,6 +33,8 @@ export interface TrainingProgress {
   totalDurationSeconds: number;
   /** cumulative index (baseline 100) after each workout that had a comparable exercise */
   indexSeries: SeriesPoint[];
+  /** total weight (kg x reps of weighted sets) per completed workout */
+  volumeSeries: SeriesPoint[];
   exercises: { id: string; name: string; sessions: number; lastDate: Ms }[];
 }
 
@@ -56,6 +58,16 @@ export function buildTrainingProgress(data: AppData): TrainingProgress {
     label: dateLabel(c.date),
   }));
 
+  const volumeSeries: SeriesPoint[] = workouts.map((w) => ({
+    date: w.startedAt,
+    label: dateLabel(w.startedAt),
+    value: trainingVolume(
+      sets
+        .filter((x) => x.workoutID === w.id)
+        .map((x) => ({ weightKg: x.weight, reps: x.reps, repsOnly: isRepsOnlyExercise(x.exerciseID) })),
+    ),
+  }));
+
   const perExercise = new Map<string, { sessions: Set<string>; lastDate: Ms }>();
   for (const s of sets) {
     const id = stableExerciseID(s.exerciseID);
@@ -76,6 +88,7 @@ export function buildTrainingProgress(data: AppData): TrainingProgress {
     totalVolumeKg,
     totalDurationSeconds: workouts.reduce((t, w) => t + Math.max(0, ((w.endedAt ?? w.startedAt) - w.startedAt) / 1000), 0),
     indexSeries,
+    volumeSeries,
     exercises,
   };
 }

@@ -66,3 +66,13 @@ Device-confirmed in the legacy app (Build 60): the accepted element and chart he
 - Use the Design canvas: 390×844 boards side by side, real content, one board for the current state as reference.
 - Fidelity lesson: base variants on the tokens read from the legacy code, not on V2 placeholder values.
 - Change a canvas only after reading its current files; the user edits it live.
+
+## Legacy screen descriptions from real renders (added during the rebuild)
+
+Source: the legacy UI-preview workflow renders (`home.screen`, `dashboard.workouts.screen`), downloaded from GitHub Actions artifacts and viewed locally. Images are not committed.
+
+**Home:** centered header with orange "LI" mark, then "LOCKED" (white, letter-spaced) and "IN" (orange). Below: start card (92 high, orange gradient from the left fading into the card, orange border, solid orange 54 tile with black play glyph, title "Workout starten" bold ~24, orange chevron right). Then category cards (132 high, 62 tile with accent at 9 %, caption uppercase grey, value bold ~26 in traffic-light green such as `2 / 2` or `Ø 9.670`, detail line ~15 in green or grey, chevron in the accent). Then a compact "Gewicht" card (92 high, grey tile with weight glyph, title only). Footer: black, filled house (active, orange), chart, gear; no labels; hairline above.
+
+**Workouts detail (legacy, now folded into Progress > Training per D-052):** centered title. One large card: caption "LETZTE 4 WOCHEN", a two-part switch (Index | Gesamtgewicht, selected = grey pill), left caption + very large orange value (`120,4`), right caption "4-WOCHEN-TREND" + large green percentage, then a plain line chart with round dots, horizontal grid lines, value labels on the right (100,0 / 105,0 ...) and three date labels below. Second card: two columns (Index, Gesamtgewicht) with white value and green change. Then a full-width orange button "Workout nachtragen" and two dark buttons side by side ("Übungen", "Verlauf") with leading glyphs.
+
+V2 status: Home and the Progress Training card follow these descriptions. "Workout nachtragen" (manual workout entry) is not built.

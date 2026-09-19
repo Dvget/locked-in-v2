@@ -122,11 +122,14 @@ export function Segmented<T extends string>({
   value,
   onChange,
   accent = colors.accent,
+  neutral = false,
 }: {
   options: { value: T; label: string }[];
   value: T;
   onChange: (v: T) => void;
   accent?: string;
+  /** Legacy inner switch: grey selected pill with white text. */
+  neutral?: boolean;
 }) {
   return (
     <View style={styles.segmented}>
@@ -138,9 +141,9 @@ export function Segmented<T extends string>({
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
             onPress={() => onChange(o.value)}
-            style={[styles.segment, active && { backgroundColor: accent }]}
+            style={[styles.segment, active && { backgroundColor: neutral ? '#636366' : accent }]}
           >
-            <Text style={[styles.segmentText, active && { color: '#000' }]}>{o.label}</Text>
+            <Text style={[styles.segmentText, active && !neutral && { color: '#000' }]}>{o.label}</Text>
           </Pressable>
         );
       })}
