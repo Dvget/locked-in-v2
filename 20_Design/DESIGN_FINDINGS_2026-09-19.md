@@ -76,3 +76,9 @@ Source: the legacy UI-preview workflow renders (`home.screen`, `dashboard.workou
 **Workouts detail (legacy, now folded into Progress > Training per D-052):** centered title. One large card: caption "LETZTE 4 WOCHEN", a two-part switch (Index | Gesamtgewicht, selected = grey pill), left caption + very large orange value (`120,4`), right caption "4-WOCHEN-TREND" + large green percentage, then a plain line chart with round dots, horizontal grid lines, value labels on the right (100,0 / 105,0 ...) and three date labels below. Second card: two columns (Index, Gesamtgewicht) with white value and green change. Then a full-width orange button "Workout nachtragen" and two dark buttons side by side ("Übungen", "Verlauf") with leading glyphs.
 
 V2 status: Home and the Progress Training card follow these descriptions. "Workout nachtragen" (manual workout entry) is not built.
+
+## Design inspiration track (2026-09-20)
+
+The user does not like the current look (colors are not applied consistently, no direction chosen). Plan: finish functionality screen by screen first, collect inspiration in parallel, then decide a direction and restyle (colors and sizes are central in `app/src/theme` and `app/src/components`).
+
+Inspiration source under consideration: the Mobbin MCP connector (search of real app screens, flows and sections). It requires a paid Mobbin plan (reported about 10 to 15 USD per month depending on billing period; verify on their pricing page, which could not be fetched automatically). It is a design tool for the user, not app infrastructure, so it does not conflict with D-008, but it is the user's call. Alternatives: the user collects screenshots of apps they like and shows them in chat (they are then described as text here, never committed). Candidate apps to look at: Strava, Apple Fitness, Hevy, Strong, Whoop, Nike Run Club, Oura. Screen types to cover: dashboard, active workout, active run, progress/charts, onboarding (D-061).

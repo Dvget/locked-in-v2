@@ -132,3 +132,17 @@ Goals should provide context, not turn the app into an intrusive coach.
 
 ### About LOCKED IN
 App version and relevant technical/data-source information.
+
+## Onboarding (required, D-061)
+
+The app needs an onboarding flow at first launch. The requirement is fixed; content is still open and is defined with the user, screen by screen, before it is built.
+
+Candidate steps (not decided):
+- Welcome and one-sentence promise (local, offline, no account).
+- Goals: weight direction (lose / maintain / gain), workouts and runs per week.
+- Body weight (used for bodyweight exercises and the weight trend).
+- First training plan: start with the default plan, create one, or import a backup from the legacy app.
+- Permissions explained where they matter: location and background location (runs), motion (steps), notifications (rest timer). Each with a short reason and a way to say "later".
+- Where the backup lives and how to make one.
+
+Rules: skippable where sensible, short, never blocks the fast-use layer afterwards, and the same settings stay editable later under Settings. The default plan currently seeded on first launch and the permission prompts that appear on first use are the interim behavior until this is designed.
