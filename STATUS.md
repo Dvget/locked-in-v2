@@ -57,10 +57,23 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 
 Keep this list current after every larger work block. A new chat starts from here.
 
-1. First iOS Dev Client proof: the GitHub build works (run `35457817569`, success, release `build-2`). Still to do: install the IPA via SideStore (source URL in `60_Workflow/SETUP_LOG_2026-09-19.md`), connect the Dev Client to Metro on the PC, check Fast Refresh. App display name is "LOCKED IN 2", bundle id `app.lockedin.v2` (separate from the legacy app `app.lockedin.tracker`, so it does not overwrite it).
-2. Decide about repo visibility: the SideStore source and IPA are served from public GitHub release files, so they stop working if the repo goes private again. Options: keep the repo public (license: all rights reserved), or build in a private repo and publish to a separate public distribution repo like the legacy project did.
-3. Rebuild the legacy app 1:1 in slices while applying V2 decisions; order and mapping in `40_Migration/LEGACY_TO_V2_MAP.md`. Open decision: persistence technology (recommended: local database on the phone).
-4. Open: whether to rename the app back to "LOCKED IN" later (display name is easy to change; the bundle id decides whether it replaces the old app or installs next to it).
+**Done (2026-09-19):** the technical proof works end to end. GitHub builds an unsigned Dev Client IPA (about 5 min, workflow `Build iOS Dev Client (unsigned)`), publishes it as a GitHub release plus SideStore feed, SideStore installs it as "LOCKED IN 2" (`app.lockedin.v2`, next to the legacy app), the Dev Client finds Metro on the PC over Wi-Fi. Web preview also works. The SideStore feed is served from public release files, so the repo must stay public (license: all rights reserved) or a separate public distribution repo is needed later. Free Actions minutes only apply to public repos.
+
+**Now: rebuild the legacy app 1:1 in slices, applying V2 decisions while porting.** Map and status per area: `40_Migration/LEGACY_TO_V2_MAP.md`. Legacy source (read-only): `Dvget/locked-in`, branch `codex/locked-in-0.8.8`; clone it into a scratch folder outside this repo. V2 decisions in `DECISIONS.md` override legacy behavior. Legacy Swift tests in `LockedInTests/` are the behavior oracle.
+
+Slices, in this order:
+1. **Domain foundation (pure TypeScript, no native code, no device rebuild):** data types, Monday-first week utilities, analytics ported from `TrackingAnalytics.swift`, `DashboardAnalytics.swift`, `StrengthProgressMetric.swift`, `StrengthProgression.swift` (run summary, weekly run change, steps preferred sample and completed-day average, weekly goal status, percentage change, weekly weight averages, workout index). Add a test runner (proposal: `vitest` as dev dependency) and port the matching legacy tests.
+2. **Data layer:** repository interface with an in-memory implementation and seed data first; then local database on the phone (proposal: `expo-sqlite`, native, needs one Dev Client rebuild; free while the repo is public). Backup JSON must stay readable against the legacy `BackupPayload` shape (add an explicit schema version).
+3. **Dashboard with real data** (replace `dashboardDummy.ts`), keep the current design.
+4. **Training plans and exercise library** (legacy `exercise-library.json` is public domain; include muscle metadata for D-043/D-046).
+5. **Active workout** (sets, resume, rest timer, skip/revisit per D-019 to D-024).
+6. **Backup / export / import.**
+7. **Progress, then Weekly Report** (new design, legacy comparison rules).
+8. **Running last** (depends on unproven native capabilities: background location, Live Activity, audio; port the pure filter/distance/pace/split logic as TypeScript with legacy tests as oracle; do not port elevation; keep raw GPS points so a route map stays possible, D-044).
+
+Open decisions: persistence technology (default: `expo-sqlite` unless the user objects), Dashboard detail screens vs Progress only, whether Weekly Report also auto-opens once per week, Bluetooth scale import, later rename to "LOCKED IN" (display name is easy; the bundle id decides whether V2 replaces the legacy app).
+
+Housekeeping: Actions minutes are limited for private repos; ask before dispatching builds. Builds are only needed when native dependencies change (for example `expo-sqlite`).
 
 ## Product-definition status
 
