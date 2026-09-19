@@ -36,9 +36,14 @@ The repo root is both the Obsidian vault (the "project brain": Markdown docs) an
 `App.tsx` -> `SafeAreaProvider` -> `AppFrame` (web only: limits width to 430 px, native renders unchanged) -> `RootNavigator`.
 
 - Navigation (React Navigation 7, dynamic API, provisional per D-048): `RootNavigator` is a native stack (`Tabs`, `Workout`, `Running`, `WeeklyReport`); `TabNavigator` holds the bottom tabs Dashboard / Progress / Settings. Screen param lists live in `src/types/navigation.ts`. Workout, Running and Weekly Report are opened from the Dashboard, not from tabs.
-- Dashboard V1 is assembled from small components in `src/components/dashboard/` fed by static dummy data in `src/data/dashboardDummy.ts`. There is no real data layer yet: no database, state management, charts library or icon library. The mini charts are plain Views (`Sparkline`).
-- Styling tokens are in `src/theme` (colors incl. orange brand accent and violet running accent, spacing, radius, typography). Dark mode only (`userInterfaceStyle: "dark"`).
-- Workout, Running, Progress, Settings and Weekly Report screens are still placeholders.
+- Layers (rebuild state, decisions D-051 to D-060):
+  - `src/domain/` is pure TypeScript with vitest tests (`npm test` in `app/`): dates (Monday-first weeks, epoch ms), analytics, strength index, plans, exercises (bundled library JSON in `src/data/exercises/`), dashboard/progress/weekly-report view models, achievements, running core (filter, metrics, splits, clock), GPX, chart math. No React or native imports here.
+  - `src/data/` is the storage boundary: `Repository` interface, `MemoryRepository` (tests, web preview with `demoData.ts`), `SqliteRepository` (phone, `expo-sqlite`), backup JSON (`backup.ts`), and the React `store.tsx` (`useStore()`). `createRepository.web.ts` vs `createRepository.ts` pick the implementation.
+  - `src/native/` wraps device features: GPS run engine (`runEngine.ts`), pedometer (`steps.ts`), haptics/speech/notifications (`feedback.ts`), files/share/picker (`files.ts`), auto backup.
+  - `src/screens/` and `src/components/` are the UI. Charts are custom `react-native-svg` (`components/charts.tsx`). Shared controls are in `components/ui.tsx`.
+- Dashboard, Progress, Settings (tabs) plus stack screens Workout, Running, WeeklyReport, TrainingPlans, PlanEditor, Goals, DataBackup, About, History, WorkoutDetail, RunDetail, ExerciseStats, Achievements. Unfinished workout state lives in the KV table (`activeWorkout`), a running run checkpoints under `activeRun`.
+- Styling tokens are in `src/theme` (legacy tokens per D-050: orange `#FC4C02`, running purple `#8C57F5`, card `#131316`, radius 20). Dark mode only (`userInterfaceStyle: "dark"`). Footer: icons only.
+- Not built: Live Activity / lock-screen controls, elevation, route map UI, Bluetooth scale. Native features are unverified until checked on the iPhone (`60_Workflow/REBUILD_REVIEW.md`).
 
 ## Design
 

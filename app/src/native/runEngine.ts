@@ -52,7 +52,9 @@ function toSample(l: Location.LocationObject): RunLocationSample {
     timestamp: l.timestamp,
     latitude: l.coords.latitude,
     longitude: l.coords.longitude,
-    altitude: l.coords.altitude ?? Number.NaN,
+    // Raw altitude is kept for a future elevation design; a missing value must stay a finite number
+    // (NaN cannot be stored in SQLite or survive a JSON checkpoint).
+    altitude: Number.isFinite(l.coords.altitude) ? (l.coords.altitude as number) : 0,
     horizontalAccuracy: l.coords.accuracy ?? -1,
     verticalAccuracy: l.coords.altitudeAccuracy ?? -1,
     reportedSpeed: l.coords.speed ?? -1,

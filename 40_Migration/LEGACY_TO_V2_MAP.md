@@ -6,6 +6,24 @@ Source: `Dvget/locked-in`, branch `codex/locked-in-0.8.8`, **0.8.8 Build 60** (r
 
 Status values: **übernehmen** · **übernehmen + verbessern** · **neu bauen** · **verwerfen**
 
+## Rebuild status (autonomous rebuild, 2026-09-19)
+
+Code state per area. "Built" means implemented, type-checked and covered by tests where logic exists. "Not verified on device" means it needs the iPhone (see `60_Workflow/REBUILD_REVIEW.md`).
+
+| Area | State |
+|---|---|
+| Dashboard | Built with real data (D-052). Design follows D-050 tokens. |
+| Training (active workout) | Built: plan picker, slot flow, previous comparison, progression hint, skip/revisit, alternatives, rest timer, resume, completion summary. Live Activity not built. Not verified on device. |
+| Trainingspläne | Built: list, editor, alternatives, rep-range override, workout type, 30-day history, custom exercises, bundled library with German search. |
+| Running | Built: filter/metrics/splits ported with tests; screens, countdown, spoken cues, checkpoint restore. Elevation not computed. Live Activity and lock-screen controls not built. Not verified on device. |
+| Progress | Built: training index chart, exercise stats, running series, weight range chart, history lists with hide/delete, Bestwerte list. |
+| Weekly Report | Built with new layout, comparable-only rules, 8-week context, standouts; auto-open once per week. |
+| Gewicht | Built: manual entry, goal-aware tone. No Bluetooth scale. |
+| Schritte | Built: pedometer sync (7 days), completed-day rules, weekly goal colour. Not verified on device. |
+| Einstellungen | Built: Trainingspläne, Ziele, Daten & Backup, Über. |
+| Backup / Restore / Export | Built: JSON (legacy shape + schema version), recovery snapshot, GPX, full export, optional auto-backup folder. Not verified on device. |
+| Datenmodell / Persistenz | Built: `expo-sqlite` behind `Repository`, in-memory for web. Not verified on device. |
+
 ## Legacy stack facts that shape the port
 
 - SwiftUI + SwiftData (`WorkoutRecord`, `SetRecord`, `RunRecord`, `RunTrackPoint`, `StepRecord`, `WeightRecord`), local store, no CloudKit.
