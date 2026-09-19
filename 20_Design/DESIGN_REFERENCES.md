@@ -25,6 +25,29 @@ Useful characteristics for LOCKED IN:
 
 This is a reference for design qualities, not a requirement to copy Strava.
 
+## Inspiration 2: "GOD MODE" GitHub-card thumbnail (added 2026-09-20)
+
+Source: a video thumbnail the user liked, shared in chat. Local file: `20_Design/References/inspo-02-god-mode-github-cards.png` (git-ignored, visible in Obsidian only). The user said this way of presenting things appeals to them a lot. It is about mood and card style, not a fitness screen.
+
+What it shows:
+
+- Near-black background with a very subtle grain and a warm orange glow rising from the lower left. The glow is soft and localized, not a color fill.
+- Huge, heavy, white sans-serif headline ("GOD MODE") with two of the letters replaced by symbols: an orange starburst and the GitHub logo. One strong typographic gesture, no other decoration.
+- Below it, a fanned stack of dark charcoal cards in slight perspective. They overlap; cards further back are dimmer and smaller, which creates depth without shadows.
+- Card anatomy (front card): rounded corners (about 16 to 20), thin subtle border, a solid orange rounded-square icon tile with a white glyph on the left, a small grey lowercase org label above a bold white name, a stat row with an orange star and a bold number plus a grey fork icon and a grey number, then two grey skeleton bars as placeholder text. A small light grey logo sits in the top right corner.
+- Palette is only: near-black, charcoal, white, mid grey and ONE orange accent. Orange appears in the glow, the icon tile, the star and the headline symbol.
+
+Useful characteristics for LOCKED IN:
+
+- one accent color with a clear role, everything else neutral (answers the "colors are not consistent" problem);
+- big confident type for the one thing that matters, small grey labels for the rest;
+- cards defined by tone and a hairline border, depth by overlap and dimming instead of shadows;
+- a compact stat row pattern (icon + bold number, then grey secondary number) that could fit workout or run summaries;
+- a soft localized glow as the only "effect", possibly for the start card or a completed-workout moment;
+- an accent-filled icon tile as the single strong element on a card (similar to the current start card tile).
+
+Caution: it is a marketing image, so density and text sizes are exaggerated; real screens need smaller type and more data.
+
 ## Rule for images
 
 Screenshots and other reference images stay in the local Obsidian folder only (`20_Design/References/` is git-ignored). Anything important about an image is written down as text in this file.
