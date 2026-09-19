@@ -83,5 +83,7 @@ If something breaks on the phone, note the screen and what you did; the fix is t
 
 ## Builds
 
-Build 1 (native dependencies batch): run `35463599872`, success.
-Build 2 (adds `expo-notifications`): run `35465682107`, see the result line below.
+Build 1 (native dependencies batch): run `35463599872`, success, release `build-4`.
+Build 2 (adds `expo-notifications`): run `35465682107`, success (11 min 37 s), release `build-5` = "LOCKED IN 2 – Build 5", the current "Latest". Install this one.
+
+Two builds of the five allowed were used in this rebuild. Later JavaScript-only changes need no new build, only Metro.
