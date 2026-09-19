@@ -271,3 +271,23 @@ export function BigCheckIcon({ color, size = 40 }: IconProps) {
     </Svg>
   );
 }
+
+export function ClockIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5M3.5 4v4.5H8" {...stroke(color, 2)} />
+      <Path d="M12 7.5V12l3 2" {...stroke(color, 2)} />
+    </Svg>
+  );
+}
+
+export function ListIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M8 6.5h12M8 12h12M8 17.5h12" {...stroke(color, 2.2)} />
+      <Circle cx={4} cy={6.5} r={1.3} fill={color} />
+      <Circle cx={4} cy={12} r={1.3} fill={color} />
+      <Circle cx={4} cy={17.5} r={1.3} fill={color} />
+    </Svg>
+  );
+}

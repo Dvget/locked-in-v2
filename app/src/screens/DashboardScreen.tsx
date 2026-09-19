@@ -4,13 +4,10 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useMemo, useState } from 'react';
 
 import { Screen } from '../components/Screen';
-import { WeightEntrySheet } from '../components/WeightEntrySheet';
-import { AchievementCard } from '../components/dashboard/AchievementCard';
 import { DashboardHeader } from '../components/dashboard/DashboardHeader';
 import { CategoryCard, CompactCard, StartCard } from '../components/dashboard/HomeCards';
-import { ResumeCard } from '../components/dashboard/ResumeCard';
-import { WeeklyReportCard } from '../components/dashboard/WeeklyReportCard';
 import { DumbbellIcon, PlayIcon, RunnerIcon, StepsIcon, WeightIcon } from '../components/icons';
+import { ACTIVE_RUN_KEY } from '../domain/running';
 import { isDemoRepository } from '../data/createRepository';
 import { useStore } from '../data/store';
 import { dailyStepStatus } from '../domain/analytics';
@@ -25,12 +22,15 @@ type Props = CompositeScreenProps<
   NativeStackScreenProps<RootStackParamList>
 >;
 
+// Legacy Home: brand header, ONE start card (leads to "Workout oder Run?", or resumes an unfinished session),
+// then the category cards Workouts / Runs / Steps and the compact Weight card. Each card opens its own detail screen.
 export function DashboardScreen({ navigation }: Props) {
-  const { data, settings, updateSettings, ready } = useStore();
-  const [weightSheet, setWeightSheet] = useState(false);
+  const store = useStore();
+  const { data, settings, updateSettings, ready } = store;
+  const [hasRun, setHasRun] = useState(false);
   const model = useMemo(() => buildDashboard(data, settings), [data, settings]);
 
-  // Weekly report opens once automatically at the first app start of a new week (legacy behavior).
+  // Weekly report opens once automatically at the first app start of a new week (legacy behavior, D-053).
   useEffect(() => {
     // The web preview uses non-persistent demo data, so it would reopen on every reload.
     if (!ready || isDemoRepository) return;
@@ -41,18 +41,28 @@ export function DashboardScreen({ navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  const toProgress = () => navigation.navigate('Tabs', { screen: 'Progress' });
+  // Is there an unfinished run checkpoint? (re-checked whenever the screen gets focus)
+  useEffect(() => {
+    const check = () => store.getKV(ACTIVE_RUN_KEY).then((v) => setHasRun(v !== null));
+    check();
+    return navigation.addListener('focus', check);
+  }, [navigation, store]);
 
-  // Workouts card: goal progress plus the weekly strength index.
+  const openWorkout = data.workouts.some((w) => !w.isCompleted && !w.isHidden);
+  const startTitle = hasRun ? 'Run fortsetzen' : openWorkout ? 'Workout fortsetzen' : 'Workout starten';
+  const onStart = () => {
+    if (hasRun) navigation.navigate('Running');
+    else if (openWorkout) navigation.navigate('Workout');
+    else navigation.navigate('TrainingChoice');
+  };
+
   const bandColor = (delta: number | null) => {
     if (delta === null) return colors.textMuted;
     const band = progressBand(delta);
     return band === 'improved' ? colors.good : band === 'declined' ? colors.bad : colors.warn;
   };
-  const workoutDetail = model.weekProgress !== null ? `Wochenfortschritt ${progressText(model.weekProgress)}` : 'Noch kein Vergleich';
-  const runDetail =
-    model.runWeekChange !== null ? `${percentText(model.runWeekChange)} zur Vorwoche` : 'Noch kein Vergleich zur Vorwoche';
-
+  const workoutDetail = model.weekProgress !== null ? `Wochenfortschritt ${progressText(model.weekProgress)}` : 'Noch kein Wochenvergleich';
+  const runDetail = model.runWeekChange !== null ? `${percentText(model.runWeekChange)} zur Vorwoche` : 'Noch kein Wochenvergleich';
   const stepValue = model.stepCardAverage !== null ? `Ø ${formatSteps(model.stepCardAverage)}` : '–';
   const stepColor = model.stepCardAverage !== null ? toneColor(dailyStepStatus(model.stepCardAverage)) : colors.textMuted;
 
@@ -60,19 +70,11 @@ export function DashboardScreen({ navigation }: Props) {
     <Screen padding={14} gap={10}>
       <DashboardHeader />
 
-      <ResumeCard onResumeWorkout={() => navigation.navigate('Workout')} onResumeRun={() => navigation.navigate('Running')} />
-
       <StartCard
-        title="Workout starten"
-        accent={colors.accent}
+        title={startTitle}
+        accent={hasRun ? colors.running : colors.accent}
         icon={<PlayIcon color="#000" />}
-        onPress={() => navigation.navigate('Workout')}
-      />
-      <StartCard
-        title="Lauf starten"
-        accent={colors.running}
-        icon={<PlayIcon color="#000" />}
-        onPress={() => navigation.navigate('Running')}
+        onPress={onStart}
       />
 
       <CategoryCard
@@ -83,7 +85,7 @@ export function DashboardScreen({ navigation }: Props) {
         detailColor={bandColor(model.weekProgress)}
         accent={colors.accent}
         icon={<DumbbellIcon color={colors.accent} />}
-        onPress={toProgress}
+        onPress={() => navigation.navigate('DashboardWorkouts')}
       />
       <CategoryCard
         label="Runs"
@@ -93,36 +95,30 @@ export function DashboardScreen({ navigation }: Props) {
         detailColor={bandColor(model.runWeekChange)}
         accent={colors.running}
         icon={<RunnerIcon color={colors.running} />}
-        onPress={toProgress}
+        onPress={() => navigation.navigate('DashboardRuns')}
       />
       <CategoryCard
         label="Steps"
         value={stepValue}
-        detail={settings.stepsEnabled || model.stepCardAverage !== null ? 'Wochenschnitt' : 'In den Zielen aktivieren'}
+        detail="Wochenschnitt"
         valueColor={stepColor}
         detailColor={colors.textMuted}
         accent={colors.trendNeutral}
         tileColor={colors.cardSecondary}
         icon={<StepsIcon color="rgba(255,255,255,0.85)" />}
-        onPress={() => navigation.navigate('Goals')}
+        onPress={() => navigation.navigate('DashboardSteps')}
       />
       <CompactCard
         title="Gewicht"
         detail={
           model.latestWeightKg !== null
             ? `${formatKgText(model.latestWeightKg)} kg${model.weightChange4Weeks !== null ? ` · ${formatSignedKg(model.weightChange4Weeks)} kg in 4 Wochen` : ''}`
-            : 'Tippen zum Eintragen'
+            : undefined
         }
         detailColor={model.weightTone ? toneColor(model.weightTone) : undefined}
         icon={<WeightIcon color="rgba(255,255,255,0.8)" />}
-        onPress={() => setWeightSheet(true)}
+        onPress={() => navigation.navigate('DashboardWeight')}
       />
-
-      <WeeklyReportCard onPress={() => navigation.navigate('WeeklyReport')} />
-
-      {model.lastAchievement ? <AchievementCard title={model.lastAchievement.title} value={model.lastAchievement.value} /> : null}
-
-      <WeightEntrySheet visible={weightSheet} onClose={() => setWeightSheet(false)} />
     </Screen>
   );
 }

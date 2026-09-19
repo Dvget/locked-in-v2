@@ -26,13 +26,17 @@ type LineProps = {
   onSelect?: (point: ChartPoint | null) => void;
   /** Legacy style: value labels on the right, dates below, plain line with dots, no read-out row. */
   axis?: { yFormat: (y: number) => string; xFormat: (x: number) => string };
+  /** Fixed x range (for example the rolling 28 days); dates are then labelled weekly. */
+  xDomain?: { min: number; max: number };
+  /** Show the selected-value read-out row even with axis labels. */
+  readout?: boolean;
 };
 
 const FONT = Platform.OS === 'web' ? 'system-ui, -apple-system, sans-serif' : undefined;
 const PADDING = { top: 12, right: 12, bottom: 12, left: 12 };
 const AXIS_PADDING = { top: 14, right: 50, bottom: 28, left: 12 };
 
-export function LineChart({ points, color = colors.accent, height = 160, format = (y) => String(y), emptyText, onSelect, axis }: LineProps) {
+export function LineChart({ points, color = colors.accent, height = 160, format = (y) => String(y), emptyText, onSelect, axis, xDomain, readout }: LineProps) {
   const padding = axis ? AXIS_PADDING : PADDING;
   const [width, setWidth] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -43,10 +47,27 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
     const nice = niceTicks(padded.min, padded.max, 5);
     return { min: nice[0], max: nice[nice.length - 1] };
   }, [points, axis]);
-  const scaled = useMemo(() => scalePoints(points, layout, range), [points, layout, range]);
+  const scaled = useMemo(() => scalePoints(points, layout, range, xDomain), [points, layout, range, xDomain]);
   const gridValues = axis ? niceTicks(range.min, range.max, 5) : ticks(range.min, range.max, 3);
   const baseline = height - padding.bottom;
   const gradientId = useMemo(() => `g${Math.random().toString(36).slice(2, 8)}`, []);
+
+  // Date labels: weekly steps inside a fixed domain, otherwise first / middle / last point.
+  const xTicks = useMemo(() => {
+    if (!axis || width <= 0) return [] as { x: number; px: number }[];
+    const innerW = Math.max(1, width - padding.left - padding.right);
+    if (xDomain) {
+      const week = 7 * 86_400_000;
+      const out: { x: number; px: number }[] = [];
+      for (let x = xDomain.min + week; x < xDomain.max; x += week) {
+        out.push({ x, px: padding.left + ((x - xDomain.min) / (xDomain.max - xDomain.min)) * innerW });
+      }
+      return out;
+    }
+    return [0, Math.floor((scaled.length - 1) / 2), scaled.length - 1]
+      .filter((v, i, a) => a.indexOf(v) === i && scaled[v])
+      .map((i) => ({ x: scaled[i].point.x, px: scaled[i].px }));
+  }, [axis, width, padding, xDomain, scaled]);
 
   const pick = (e: GestureResponderEvent) => {
     if (scaled.length === 0) return;
@@ -67,7 +88,7 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
 
   return (
     <View>
-      {axis ? null : (
+      {axis && !(readout && selected !== null) ? null : (
         <View style={styles.readout}>
           <Text style={styles.readoutValue}>{sel ? format(sel.point.y) : ''}</Text>
           <Text style={styles.readoutLabel}>{sel?.point.label ?? ''}</Text>
@@ -111,13 +132,11 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
               : null}
             {sel ? <Line x1={sel.px} x2={sel.px} y1={padding.top} y2={baseline} stroke={color} strokeOpacity={0.35} strokeWidth={1} /> : null}
             {axis
-              ? [0, Math.floor((scaled.length - 1) / 2), scaled.length - 1]
-                  .filter((v, i, a) => a.indexOf(v) === i)
-                  .map((i) => (
-                    <SvgText key={'x' + i} x={scaled[i].px} y={height - 6} fill={colors.textMuted} fontSize={12} fontFamily={FONT} textAnchor="middle">
-                      {axis.xFormat(scaled[i].point.x)}
-                    </SvgText>
-                  ))
+              ? xTicks.map((t) => (
+                  <SvgText key={'x' + t.x} x={t.px} y={height - 6} fill={colors.textMuted} fontSize={12} fontFamily={FONT} textAnchor="middle">
+                    {axis.xFormat(t.x)}
+                  </SvgText>
+                ))
               : null}
             {sel ? <Circle cx={sel.px} cy={sel.py} r={6} fill={colors.background} stroke={color} strokeWidth={2.5} /> : null}
           </Svg>

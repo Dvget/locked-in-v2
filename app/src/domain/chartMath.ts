@@ -33,14 +33,19 @@ export function paddedRange(values: number[], includeZero = false): { min: numbe
   return { min: includeZero && min === 0 ? 0 : min - pad, max: max + pad };
 }
 
-export function scalePoints(points: ChartPoint[], layout: Layout, range?: { min: number; max: number }): Scaled[] {
+export function scalePoints(
+  points: ChartPoint[],
+  layout: Layout,
+  range?: { min: number; max: number },
+  xDomain?: { min: number; max: number },
+): Scaled[] {
   if (points.length === 0 || layout.width <= 0) return [];
   const { padding: p } = layout;
   const innerW = Math.max(1, layout.width - p.left - p.right);
   const innerH = Math.max(1, layout.height - p.top - p.bottom);
   const xs = points.map((pt) => pt.x);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
+  const minX = xDomain ? xDomain.min : Math.min(...xs);
+  const maxX = xDomain ? xDomain.max : Math.max(...xs);
   const { min, max } = range ?? paddedRange(points.map((pt) => pt.y));
   return points.map((point) => ({
     point,

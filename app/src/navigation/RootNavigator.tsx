@@ -7,6 +7,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AchievementsScreen, ExerciseStatsScreen, RunDetailScreen, WorkoutDetailScreen } from '../screens/DetailScreens';
 import { HistoryScreen } from '../screens/HistoryScreen';
+import { DashboardRunsScreen, DashboardStepsScreen, DashboardWeightScreen, DashboardWorkoutsScreen } from '../screens/dashboard/DashboardDetails';
+import { ExercisesScreen } from '../screens/ExercisesScreen';
+import { TrainingChoiceScreen } from '../screens/TrainingChoiceScreen';
 import { RunningScreen } from '../screens/RunningScreen';
 import { AboutScreen } from '../screens/settings/AboutScreen';
 import { DataBackupScreen } from '../screens/settings/DataBackupScreen';
@@ -58,6 +61,12 @@ export function RootNavigator() {
         <Stack.Screen name="RunDetail" component={RunDetailScreen} options={{ title: 'Lauf' }} />
         <Stack.Screen name="ExerciseStats" component={ExerciseStatsScreen} options={{ title: 'Übung' }} />
         <Stack.Screen name="Achievements" component={AchievementsScreen} options={{ title: 'Bestwerte' }} />
+        <Stack.Screen name="TrainingChoice" component={TrainingChoiceScreen} options={{ headerShown: false, presentation: 'fullScreenModal' }} />
+        <Stack.Screen name="Exercises" component={ExercisesScreen} options={{ title: 'Übungen' }} />
+        <Stack.Screen name="DashboardWorkouts" component={DashboardWorkoutsScreen} options={{ title: 'Workouts', headerTintColor: colors.accent }} />
+        <Stack.Screen name="DashboardRuns" component={DashboardRunsScreen} options={{ title: 'Runs', headerTintColor: colors.running }} />
+        <Stack.Screen name="DashboardSteps" component={DashboardStepsScreen} options={{ title: 'Steps', headerTintColor: colors.good }} />
+        <Stack.Screen name="DashboardWeight" component={DashboardWeightScreen} options={{ title: 'Gewicht', headerTintColor: 'rgba(255,255,255,0.82)' }} />
         <Stack.Screen name="About" component={AboutScreen} options={{ title: 'Über LOCKED IN' }} />
       </Stack.Navigator>
     </NavigationContainer>

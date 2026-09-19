@@ -23,4 +23,10 @@ export type RootStackParamList = {
   RunDetail: { runId: string };
   ExerciseStats: { exerciseId: string };
   Achievements: undefined;
+  TrainingChoice: undefined;
+  Exercises: undefined;
+  DashboardWorkouts: undefined;
+  DashboardRuns: undefined;
+  DashboardSteps: undefined;
+  DashboardWeight: undefined;
 };

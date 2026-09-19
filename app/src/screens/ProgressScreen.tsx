@@ -152,6 +152,14 @@ export function ProgressScreen({ navigation }: Props) {
         </>
       ) : null}
 
+      <Row onPress={() => navigation.navigate('WeeklyReport')}>
+        <View style={{ flex: 1 }}>
+          <Text style={{ color: colors.text, fontSize: 16, fontWeight: '600' }}>Wochenbericht</Text>
+          <Muted>Letzte Woche im Vergleich</Muted>
+        </View>
+        <Text style={{ color: colors.textMuted, fontSize: 20 }}>›</Text>
+      </Row>
+
       <Row onPress={() => navigation.navigate('Achievements')}>
         <View style={{ flex: 1 }}>
           <Text style={{ color: colors.text, fontSize: 16, fontWeight: '600' }}>Bestwerte</Text>

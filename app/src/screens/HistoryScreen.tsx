@@ -112,7 +112,7 @@ export function HistoryScreen({ navigation, route }: Props) {
   );
 }
 
-function RunEntrySheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
+export function RunEntrySheet({ visible, onClose }: { visible: boolean; onClose: () => void }) {
   const store = useStore();
   const [km, setKm] = useState('');
   const [minutes, setMinutes] = useState('');
