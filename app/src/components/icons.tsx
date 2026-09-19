@@ -95,3 +95,85 @@ export function GearTabIcon({ color, size = 30 }: IconProps) {
     </Svg>
   );
 }
+
+const stroke = (color: string, w = 2.4) => ({
+  stroke: color,
+  strokeWidth: w,
+  fill: 'none' as const,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+});
+
+export function MinusIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 12h14" {...stroke(color, 2.6)} />
+    </Svg>
+  );
+}
+
+export function PlusIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M5 12h14M12 5v14" {...stroke(color, 2.6)} />
+    </Svg>
+  );
+}
+
+export function PencilIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19l-4 1z" {...stroke(color, 2)} />
+    </Svg>
+  );
+}
+
+export function TrashIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5" {...stroke(color, 2)} />
+    </Svg>
+  );
+}
+
+export function EllipsisIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Circle cx={5} cy={12} r={2} fill={color} />
+      <Circle cx={12} cy={12} r={2} fill={color} />
+      <Circle cx={19} cy={12} r={2} fill={color} />
+    </Svg>
+  );
+}
+
+export function CheckIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4.5 12.5l5 5L19.5 6.5" {...stroke(color, 3)} />
+    </Svg>
+  );
+}
+
+export function ChevronLeftIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M15 5l-7 7 7 7" {...stroke(color, 2.6)} />
+    </Svg>
+  );
+}
+
+export function ChevronRightIcon({ color, size = 20 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M9 5l7 7-7 7" {...stroke(color, 2.6)} />
+    </Svg>
+  );
+}
+
+export function ResetIcon({ color, size = 22 }: IconProps) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M4 12a8 8 0 1 0 2.5-5.8L4 8.5M4 4v4.5h4.5" {...stroke(color, 2.2)} />
+    </Svg>
+  );
+}

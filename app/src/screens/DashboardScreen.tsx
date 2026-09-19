@@ -11,6 +11,7 @@ import { CategoryCard, CompactCard, StartCard } from '../components/dashboard/Ho
 import { ResumeCard } from '../components/dashboard/ResumeCard';
 import { WeeklyReportCard } from '../components/dashboard/WeeklyReportCard';
 import { DumbbellIcon, PlayIcon, RunnerIcon, StepsIcon, WeightIcon } from '../components/icons';
+import { isDemoRepository } from '../data/createRepository';
 import { useStore } from '../data/store';
 import { dailyStepStatus } from '../domain/analytics';
 import { buildDashboard, formatKgText, formatSignedKg, formatSteps } from '../domain/dashboard';
@@ -31,7 +32,8 @@ export function DashboardScreen({ navigation }: Props) {
 
   // Weekly report opens once automatically at the first app start of a new week (legacy behavior).
   useEffect(() => {
-    if (!ready) return;
+    // The web preview uses non-persistent demo data, so it would reopen on every reload.
+    if (!ready || isDemoRepository) return;
     const key = weekKey(Date.now());
     if (settings.lastPresentedWeeklyReport === key) return;
     updateSettings({ lastPresentedWeeklyReport: key });

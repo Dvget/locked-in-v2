@@ -30,6 +30,7 @@ import {
 } from '../../domain/workoutSession';
 import { runAutoBackup } from '../../native/autoBackup';
 import { cancelNotification, scheduleRestNotification, speak, success, tap } from '../../native/feedback';
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisIcon, PencilIcon, ResetIcon, TrashIcon } from '../../components/icons';
 import { colors } from '../../theme';
 import { useNow } from './useNow';
 
@@ -87,6 +88,7 @@ export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
   const [editing, setEditing] = useState<SetRecord | null>(null);
   const [overview, setOverview] = useState(false);
   const [picker, setPicker] = useState(false);
+  const [menu, setMenu] = useState(false);
   const [finishing, setFinishing] = useState(false);
   const [summary, setSummary] = useState<WorkoutRecord | null>(null);
 
@@ -186,54 +188,87 @@ export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
   const weightColor = hint !== null ? (weight < hint ? colors.warn : colors.good) : colors.text;
 
   return (
-    <Screen>
+    <Screen padding={16} gap={10}>
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{name}</Text>
           <Text style={styles.sub}>
-            Übung {slotIndex + 1} von {state.plan.entries.length} · {formatClock(elapsed)}
+            Übung {slotIndex + 1} von {state.plan.entries.length}
           </Text>
         </View>
-        <Pressable accessibilityLabel="Übungen" onPress={() => setOverview(true)} style={styles.iconButton}>
-          <Text style={styles.iconText}>≡</Text>
+        <Pressable accessibilityLabel="Menü" onPress={() => setMenu(true)} style={styles.iconButton}>
+          <EllipsisIcon color={colors.text} />
         </Pressable>
       </View>
 
-      <Card>
-        <SectionLabel>Pause</SectionLabel>
-        <Text style={[styles.clock, timerRunning && { color: colors.accent }]}>
-          {formatClock(timerRunning ? remaining : restSeconds)}
-        </Text>
-        <View style={styles.timerButtons}>
-          <SmallButton label="−30" onPress={() => adjust(-30)} />
-          <SmallButton label={timerRunning ? 'Überspringen' : 'Start'} onPress={() => setTimer(timerRunning ? null : Date.now() + restSeconds * 1000)} />
-          <SmallButton label="+30" onPress={() => adjust(30)} />
+      <Card style={{ gap: 6 }}>
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>Gesamtzeit</Text>
+          <Text style={styles.totalValue}>{formatClock(elapsed)}</Text>
+        </View>
+        <View style={styles.timerBlock}>
+          <Text style={styles.pauseLabel}>PAUSE</Text>
+          <Text style={[styles.clock, timerRunning && { color: colors.accent }]}>
+            {formatClock(timerRunning ? remaining : restSeconds)}
+          </Text>
+          <View style={styles.timerButtons}>
+            <Button label="−30" onPress={() => adjust(-30)} style={styles.timerButton} />
+            <Button
+              label="Skip"
+              variant="primary"
+              onPress={() => (timerRunning ? setTimer(null) : setTimer(Date.now() + restSeconds * 1000))}
+              style={styles.timerButton}
+            />
+            <Button
+              label=""
+              icon={<ResetIcon color={colors.text} />}
+              onPress={() => setTimer(null)}
+              style={styles.timerButton}
+            />
+            <Button label="+30" onPress={() => adjust(30)} style={styles.timerButton} />
+          </View>
         </View>
       </Card>
 
-      <Card>
-        <SectionLabel>Letztes Mal</SectionLabel>
+      <Card style={{ gap: 12 }}>
+        <SectionLabel color={colors.good}>Letztes Mal</SectionLabel>
         {previous.length === 0 ? (
-          <Muted>Noch keine Vergleichsdaten für diese Übung.</Muted>
+          <Muted>Noch keine Daten für diese Variante</Muted>
         ) : (
-          previous.map((s, i) => {
-            const active = i === Math.min(currentSets.length, previous.length - 1);
+          (() => {
+            const targetNumber = Math.min(Math.max(currentSets.length + 1, 1), entry.sets);
+            const target = previous.find((s) => s.setNumber === targetNumber) ?? previous[previous.length - 1];
+            const line = (s: SetRecord) => (repsOnly ? `${s.reps} reps` : `${cleanWeight(s.weight)} kg × ${s.reps}`);
             return (
-              <Text key={s.id} style={[styles.prevRow, active && { color: colors.text, fontWeight: '600' }]}>
-                Satz {s.setNumber}: {repsOnly ? `${s.reps} Wdh.` : `${cleanWeight(s.weight)} kg × ${s.reps}`}
-              </Text>
+              <>
+                <View style={styles.pill}>
+                  <Text style={styles.pillText}>Satz {target.setNumber} letztes Mal</Text>
+                </View>
+                <Text style={styles.prevMain}>{line(target)}</Text>
+                <View style={styles.prevRowWrap}>
+                  {previous.map((s) => {
+                    const active = s.setNumber === targetNumber;
+                    return (
+                      <View key={s.id} style={styles.prevCell}>
+                        <Text style={[styles.prevCellLabel, active && { color: colors.good }]}>Satz {s.setNumber}</Text>
+                        <Text style={[styles.prevCellValue, active && { color: colors.good }]}>
+                          {repsOnly ? String(s.reps) : `${cleanWeight(s.weight)} × ${s.reps}`}
+                        </Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              </>
             );
-          })
+          })()
         )}
-        {hint !== null ? (
-          <Text style={[styles.hint, { color: colors.good }]}>Bereit für {cleanWeight(hint)} kg</Text>
-        ) : null}
+        {hint !== null ? <Text style={[styles.hint, { color: colors.good }]}>Bereit für {cleanWeight(hint)} kg</Text> : null}
       </Card>
 
       <View style={styles.inputs}>
         {!repsOnly ? (
           <Stepper
-            title="Gewicht"
+            title="GEWICHT"
             value={cleanWeight(weight)}
             unit="kg"
             color={weightColor}
@@ -245,43 +280,79 @@ export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
           />
         ) : null}
         <Stepper
-          title="Wiederholungen"
+          title="WIEDERHOLUNGEN"
           value={String(reps)}
-          unit="Wdh."
+          unit="reps"
           onMinus={() => setReps(Math.max(0, reps - 1))}
           onPlus={() => setReps(reps + 1)}
         />
       </View>
 
-      {allDone ? (
-        <Button label={isLast ? 'Training abschließen' : 'Weiter zur nächsten Übung'} variant="primary" onPress={advance} />
-      ) : (
-        <>
-          <Button label={`Satz ${currentSets.length + 1} speichern`} variant="primary" onPress={() => saveSet()} />
-          <Button label="Satz überspringen · 0 Wiederholungen" onPress={() => saveSet(0)} />
-        </>
-      )}
+      {/* Primary action: orange, 58 high, label centered, glyph on the right (legacy) */}
+      <Button
+        label={
+          allDone
+            ? isLast
+              ? 'Training abschließen'
+              : 'Weiter zur nächsten Übung'
+            : `Satz ${currentSets.length + 1} speichern`
+        }
+        variant="primary"
+        height={58}
+        iconRight={allDone ? <ChevronRightIcon color="#000" /> : <CheckIcon color="#000" />}
+        onPress={() => (allDone ? advance() : saveSet())}
+      />
+      {!allDone ? (
+        <Button
+          label="Satz überspringen · 0 Wiederholungen"
+          icon={<ChevronRightIcon color={colors.text} size={16} />}
+          onPress={() => saveSet(0)}
+        />
+      ) : null}
 
       {currentSets.length > 0 ? (
-        <Card>
-          <SectionLabel color={colors.accent}>Heutige Sätze</SectionLabel>
-          {currentSets.map((s) => (
-            <Pressable key={s.id} onPress={() => setEditing(s)} style={styles.setRow}>
-              <Text style={styles.setText}>
-                Satz {s.setNumber}: {s.reps === 0 ? 'übersprungen' : repsOnly ? `${s.reps} Wdh.` : `${cleanWeight(s.weight)} kg × ${s.reps}`}
-              </Text>
-              <Text style={styles.edit}>Bearbeiten</Text>
-            </Pressable>
+        <Card style={{ gap: 10 }}>
+          <SectionLabel color={colors.good}>Heutige Sätze</SectionLabel>
+          {currentSets.map((s, i) => (
+            <View key={s.id}>
+              {i > 0 ? <View style={styles.divider} /> : null}
+              <View style={styles.setRow}>
+                <Text style={styles.setNumber}>{s.setNumber}</Text>
+                <Text style={styles.setText}>
+                  {s.reps === 0 ? 'übersprungen' : repsOnly ? `${s.reps} reps` : `${cleanWeight(s.weight)} kg × ${s.reps} reps`}
+                </Text>
+                <View style={{ flex: 1 }} />
+                <Pressable accessibilityLabel="Satz bearbeiten" onPress={() => setEditing(s)} style={styles.rowIcon}>
+                  <PencilIcon color={colors.accent} />
+                </Pressable>
+                <Pressable accessibilityLabel="Satz löschen" onPress={() => removeSet(s)} style={styles.rowIcon}>
+                  <TrashIcon color={colors.bad} />
+                </Pressable>
+              </View>
+            </View>
           ))}
         </Card>
       ) : null}
 
-      <View style={styles.footer}>
-        {alternatives.length > 1 ? <Button label="Übung wechseln" onPress={() => setPicker(true)} style={{ flex: 1 }} /> : null}
-        {slotIndex > 0 ? <Button label="Zurück" onPress={() => goTo(slotIndex - 1)} style={{ flex: 1 }} /> : null}
-        {!allDone && !isLast ? <Button label="Übung überspringen" onPress={advance} style={{ flex: 1 }} /> : null}
-      </View>
-      <Button label="Training abbrechen" variant="danger" onPress={abort} />
+      {slotIndex > 0 ? (
+        <Button
+          label="Zur vorherigen Übung"
+          icon={<ChevronLeftIcon color={colors.text} />}
+          height={54}
+          onPress={() => goTo(slotIndex - 1)}
+        />
+      ) : null}
+
+      <Sheet visible={menu} title="Training" onClose={() => setMenu(false)}>
+        <Button label="Übersicht der Übungen" onPress={() => { setMenu(false); setOverview(true); }} />
+        {alternatives.length > 1 ? (
+          <Button label="Übung anpassen" onPress={() => { setMenu(false); setPicker(true); }} />
+        ) : null}
+        {!allDone && !isLast ? (
+          <Button label="Übung überspringen" onPress={() => { setMenu(false); advance(); }} />
+        ) : null}
+        <Button label="Training abbrechen" variant="danger" onPress={() => { setMenu(false); abort(); }} />
+      </Sheet>
 
       {/* Exercise overview: skip, revisit and jump (D-021) */}
       <Sheet visible={overview} title="Übungen" onClose={() => setOverview(false)}>
@@ -350,14 +421,6 @@ export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
       setTimer(next <= Date.now() ? null : next);
     }
   }
-}
-
-function SmallButton({ label, onPress }: { label: string; onPress: () => void }) {
-  return (
-    <Pressable onPress={onPress} style={styles.small}>
-      <Text style={styles.smallText}>{label}</Text>
-    </Pressable>
-  );
 }
 
 function EditSetSheet({
@@ -445,25 +508,56 @@ function SummarySheet({ workout, onDone }: { workout: WorkoutRecord | null; onDo
   );
 }
 
+
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   title: { color: colors.text, fontSize: 22, fontWeight: '700' },
-  sub: { color: colors.accent, fontSize: 14, fontWeight: '600', marginTop: 2 },
-  iconButton: { width: 44, height: 44, borderRadius: 12, backgroundColor: colors.card, alignItems: 'center', justifyContent: 'center' },
-  iconText: { color: colors.text, fontSize: 22 },
-  clock: { color: colors.text, fontSize: 44, fontWeight: '700', fontVariant: ['tabular-nums'], textAlign: 'center', paddingVertical: 4 },
-  timerButtons: { flexDirection: 'row', gap: 8 },
-  small: { flex: 1, height: 42, borderRadius: 12, backgroundColor: colors.fill, alignItems: 'center', justifyContent: 'center' },
-  smallText: { color: colors.text, fontSize: 14, fontWeight: '600' },
-  prevRow: { color: colors.textMuted, fontSize: 14, paddingVertical: 2 },
-  hint: { fontSize: 13, fontWeight: '600', marginTop: 6 },
+  sub: { color: colors.good, fontSize: 15, fontWeight: '600', marginTop: 4 },
+  iconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.07)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  totalRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6 },
+  totalLabel: { color: colors.textMuted, fontSize: 11 },
+  totalValue: { color: colors.textMuted, fontSize: 12, fontVariant: ['tabular-nums'] },
+  timerBlock: { alignItems: 'stretch', gap: 16, paddingTop: 4 },
+  pauseLabel: { color: colors.good, fontSize: 12, fontWeight: '600', letterSpacing: 1.5, textAlign: 'center' },
+  clock: { color: colors.text, fontSize: 64, fontWeight: '800', fontVariant: ['tabular-nums'], textAlign: 'center' },
+  timerButtons: { flexDirection: 'row', gap: 10 },
+  timerButton: { flex: 1, minHeight: 48 },
+  pill: {
+    alignSelf: 'center',
+    backgroundColor: 'rgba(140, 219, 79, 0.08)',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+  },
+  pillText: { color: colors.good, fontSize: 15, fontWeight: '500' },
+  prevMain: { color: colors.text, fontSize: 40, fontWeight: '800', textAlign: 'center', fontVariant: ['tabular-nums'] },
+  prevRowWrap: { flexDirection: 'row' },
+  prevCell: { flex: 1, alignItems: 'center', gap: 4 },
+  prevCellLabel: { color: colors.textMuted, fontSize: 15 },
+  prevCellValue: { color: colors.text, fontSize: 18, fontVariant: ['tabular-nums'] },
+  hint: { fontSize: 13, fontWeight: '600', textAlign: 'center' },
   inputs: { flexDirection: 'row', gap: 12 },
-  setRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 8 },
-  setText: { color: colors.text, fontSize: 15 },
+  setRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  setNumber: { color: colors.good, width: 22, fontSize: 15 },
+  setText: { color: colors.text, fontSize: 15, fontVariant: ['tabular-nums'] },
+  rowIcon: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border, marginBottom: 10 },
   edit: { color: colors.accent, fontSize: 14, fontWeight: '600' },
-  footer: { flexDirection: 'row', gap: 8 },
   overviewRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 12, backgroundColor: colors.card, borderRadius: 14,
-    padding: 14, borderWidth: 1, borderColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: colors.card,
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
 });

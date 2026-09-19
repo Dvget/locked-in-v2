@@ -16,6 +16,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, radius, spacing, typography } from '../theme';
+import { MinusIcon, PlusIcon } from './icons';
 
 type ButtonProps = {
   label: string;
@@ -24,9 +25,14 @@ type ButtonProps = {
   accent?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Leading glyph (already colored by the caller) */
+  icon?: ReactNode;
+  /** Trailing glyph */
+  iconRight?: ReactNode;
+  height?: number;
 };
 
-export function Button({ label, onPress, variant = 'secondary', accent = colors.accent, disabled, style }: ButtonProps) {
+export function Button({ label, onPress, variant = 'secondary', accent = colors.accent, disabled, style, icon, iconRight, height }: ButtonProps) {
   const primary = variant === 'primary';
   const danger = variant === 'danger';
   return (
@@ -41,11 +47,14 @@ export function Button({ label, onPress, variant = 'secondary', accent = colors.
         !primary && styles.buttonSecondary,
         danger && { borderColor: 'rgba(255,69,58,0.4)' },
         disabled && { opacity: 0.4 },
-        pressed && { opacity: 0.7 },
+        pressed && { opacity: 0.78 },
+        height ? { minHeight: height } : null,
         style,
       ]}
     >
+      {icon ? <View style={styles.buttonIcon}>{icon}</View> : null}
       <Text style={[styles.buttonText, primary && { color: '#000' }, danger && { color: colors.bad }]}>{label}</Text>
+      {iconRight ? <View style={styles.buttonIcon}>{iconRight}</View> : null}
     </Pressable>
   );
 }
@@ -69,22 +78,21 @@ type StepperProps = {
   color?: string;
   onMinus: () => void;
   onPlus: () => void;
+  labelColor?: string;
 };
 
-export function Stepper({ title, value, unit, color = colors.text, onMinus, onPlus }: StepperProps) {
+export function Stepper({ title, value, unit, color = colors.text, onMinus, onPlus, labelColor = colors.good }: StepperProps) {
   return (
     <View style={styles.stepper}>
-      <Text style={styles.sectionLabel}>{title}</Text>
-      <Text style={[styles.stepperValue, { color }]}>
-        {value}
-        {unit ? <Text style={styles.stepperUnit}> {unit}</Text> : null}
-      </Text>
+      <Text style={[styles.stepperTitle, { color: labelColor }]}>{title}</Text>
+      <Text style={[styles.stepperValue, { color }]}>{value}</Text>
+      {unit ? <Text style={styles.stepperUnit}>{unit}</Text> : null}
       <View style={styles.stepperButtons}>
         <Pressable accessibilityLabel={`${title} verringern`} onPress={onMinus} style={styles.stepperButton}>
-          <Text style={styles.stepperGlyph}>−</Text>
+          <MinusIcon color={colors.text} />
         </Pressable>
         <Pressable accessibilityLabel={`${title} erhöhen`} onPress={onPlus} style={styles.stepperButton}>
-          <Text style={styles.stepperGlyph}>+</Text>
+          <PlusIcon color={colors.text} />
         </Pressable>
       </View>
     </View>
@@ -183,25 +191,40 @@ export function Sheet({
 const styles = StyleSheet.create({
   button: {
     minHeight: 50,
-    borderRadius: 14,
+    borderRadius: radius.card,
+    flexDirection: 'row',
+    gap: 8,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
   },
+  buttonIcon: { alignItems: 'center', justifyContent: 'center' },
   buttonSecondary: { backgroundColor: colors.card, borderWidth: 1, borderColor: colors.border },
   buttonText: { color: colors.text, fontSize: 16, fontWeight: '600' },
   sectionLabel: { color: colors.textMuted, ...typography.label },
   heading: { color: colors.text, fontSize: 22, fontWeight: '600' },
   muted: { color: colors.textMuted, fontSize: 14 },
-  stepper: { flex: 1, backgroundColor: colors.card, borderRadius: radius.card, padding: spacing.md, gap: 8 },
-  stepperValue: { fontSize: 34, fontWeight: '700', fontVariant: ['tabular-nums'] },
-  stepperUnit: { fontSize: 14, color: colors.textMuted, fontWeight: '500' },
-  stepperButtons: { flexDirection: 'row', gap: 8 },
+  stepper: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.card,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: spacing.md,
+  },
+  stepperTitle: { fontSize: 12, fontWeight: '600', letterSpacing: 0.4 },
+  stepperValue: { fontSize: 42, fontWeight: '800', fontVariant: ['tabular-nums'] },
+  stepperUnit: { fontSize: 12, color: colors.textMuted },
+  stepperButtons: { flexDirection: 'row', gap: 8, alignSelf: 'stretch' },
   stepperButton: {
     flex: 1,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: colors.fill,
+    height: 48,
+    borderRadius: radius.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
