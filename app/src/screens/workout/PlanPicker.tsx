@@ -22,6 +22,9 @@ export function PlanPicker({ onStart, onManagePlans }: Props) {
     [data.plans, data.workouts, data.lastCompletedPlanID],
   );
   const [selected, setSelected] = useState<string | null>(null);
+  // Latest visible weight entry wins; the manual setting is the fallback.
+  const latestWeight = data.weights.filter((w) => !w.isHidden && w.weightKg > 0).sort((a, b) => b.date - a.date)[0];
+  const bodyWeightKg = latestWeight ? latestWeight.weightKg : settings.manualBodyWeightKg;
   const planID = selected ?? suggested ?? data.plans[0]?.id ?? null;
   const plan = data.plans.find((p) => p.id === planID) ?? null;
 
@@ -76,7 +79,7 @@ export function PlanPicker({ onStart, onManagePlans }: Props) {
         disabled={!plan || plan.entries.length === 0}
         onPress={() => {
           if (!plan) return;
-          const session = startSession(plan, settings.manualBodyWeightKg);
+          const session = startSession(plan, bodyWeightKg);
           onStart(session.workout, session.state);
         }}
       />

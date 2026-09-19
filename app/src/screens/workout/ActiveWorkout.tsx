@@ -28,6 +28,7 @@ import {
   workoutVolume,
   type WorkoutSessionState,
 } from '../../domain/workoutSession';
+import { runAutoBackup } from '../../native/autoBackup';
 import { cancelNotification, scheduleRestNotification, speak, success, tap } from '../../native/feedback';
 import { colors } from '../../theme';
 import { useNow } from './useNow';
@@ -172,6 +173,7 @@ export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
     await store.saveWorkout(finished);
     await store.markPlanCompleted(state.plan.id);
     await store.setKV(ACTIVE_WORKOUT_KEY, null);
+    runAutoBackup(store);
     success();
     setFinishing(false);
     setSummary(finished);

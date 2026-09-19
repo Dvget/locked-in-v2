@@ -6,6 +6,11 @@ import {
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { RunningScreen } from '../screens/RunningScreen';
+import { AboutScreen } from '../screens/settings/AboutScreen';
+import { DataBackupScreen } from '../screens/settings/DataBackupScreen';
+import { GoalsScreen } from '../screens/settings/GoalsScreen';
+import { PlanEditorScreen } from '../screens/settings/PlanEditorScreen';
+import { TrainingPlansScreen } from '../screens/settings/TrainingPlansScreen';
 import { WeeklyReportScreen } from '../screens/WeeklyReportScreen';
 import { WorkoutScreen } from '../screens/WorkoutScreen';
 import { colors } from '../theme';
@@ -40,8 +45,13 @@ export function RootNavigator() {
         <Stack.Screen
           name="WeeklyReport"
           component={WeeklyReportScreen}
-          options={{ title: 'Weekly Report' }}
+          options={{ title: 'Wochenbericht' }}
         />
+        <Stack.Screen name="TrainingPlans" component={TrainingPlansScreen} options={{ title: 'Trainingspläne' }} />
+        <Stack.Screen name="PlanEditor" component={PlanEditorScreen} options={{ title: 'Plan' }} />
+        <Stack.Screen name="Goals" component={GoalsScreen} options={{ title: 'Ziele' }} />
+        <Stack.Screen name="DataBackup" component={DataBackupScreen} options={{ title: 'Daten & Backup' }} />
+        <Stack.Screen name="About" component={AboutScreen} options={{ title: 'Über LOCKED IN' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
