@@ -9,7 +9,14 @@
     "userInterfaceStyle": "dark",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.lockedin.v2"
+      "bundleIdentifier": "app.lockedin.v2",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location"
+        ],
+        "NSMotionUsageDescription": "LOCKED IN 2 liest deine Schritte vom iPhone.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,6 +29,25 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-sharing",
+      "expo-task-manager",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "LOCKED IN 2 nutzt deinen Standort, um deine Laufstrecke zu messen, auch wenn der Bildschirm gesperrt ist.",
+          "locationWhenInUsePermission": "LOCKED IN 2 nutzt deinen Standort, um deine Laufstrecke zu messen.",
+          "isIosBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "LOCKED IN 2 liest deine Schritte vom iPhone."
+        }
+      ]
+    ]
   }
 }

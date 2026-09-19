@@ -1,0 +1,22 @@
+{
+  "library:Incline_Dumbbell_Press": "Kurzhantelschrägbankdrücken",
+  "library:Barbell_Incline_Bench_Press_-_Medium_Grip": "Langhantelschrägbankdrücken",
+  "library:Barbell_Bench_Press_-_Medium_Grip": "Langhantelbankdrücken flach",
+  "library:Barbell_Squat": "Squats mit Langhantel",
+  "library:Leg_Press": "Beinpresse",
+  "library:Goblet_Squat": "Squats mit Kurzhantel",
+  "library:Pullups": "Klimmzüge – gerade Stange",
+  "pullup_wide_angle": "Klimmzüge – breiter schräger Griff",
+  "pullup_narrow": "Klimmzüge – enger Griff",
+  "pullup_narrow_angle": "Klimmzüge – enger schräger Griff",
+  "library:Romanian_Deadlift": "Rumänisches Kreuzheben – Langhantel",
+  "rdl_dumbbell": "Rumänisches Kreuzheben – Kurzhanteln",
+  "library:Seated_Cable_Rows": "Enges Rudern",
+  "row_wide": "Breites Rudern",
+  "library:Side_Lateral_Raise": "Seitheben – Kurzhanteln",
+  "lateral_cable": "Seitheben – Kabelzug",
+  "library:Hyperextensions_Back_Extensions": "Hyperextensions",
+  "library:Cable_Crunch": "Cable Crunch",
+  "hanging_knee_raise": "Hanging Knee Raises",
+  "library:Plank": "Plank"
+}

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "pullup_wide_angle",
+    "name": "Klimmzüge – breiter schräger Griff",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "pullup_narrow",
+    "name": "Klimmzüge – enger Griff",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "pullup_narrow_angle",
+    "name": "Klimmzüge – enger schräger Griff",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "lats"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "rdl_dumbbell",
+    "name": "Rumänisches Kreuzheben – Kurzhanteln",
+    "equipment": "dumbbell",
+    "primaryMuscles": [
+      "hamstrings"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "row_wide",
+    "name": "Breites Rudern – Kabelzug",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "middle back"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "lateral_cable",
+    "name": "Seitheben – Kabelzug",
+    "equipment": "cable",
+    "primaryMuscles": [
+      "shoulders"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  },
+  {
+    "id": "hanging_knee_raise",
+    "name": "Hanging Knee Raises",
+    "equipment": "body only",
+    "primaryMuscles": [
+      "abdominals"
+    ],
+    "secondaryMuscles": [],
+    "instructions": []
+  }
+]
