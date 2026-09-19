@@ -10,6 +10,7 @@ import { useStore } from '../../data/store';
 import { newId } from '../../domain/dates';
 import { exerciseName, type ExerciseDefinition } from '../../domain/exercises';
 import { PlanError, validatePlans, type PlannedExercise, type TrainingPlan } from '../../domain/plans';
+import { runAutoBackup } from '../../native/autoBackup';
 import { colors } from '../../theme';
 import type { RootStackParamList } from '../../types/navigation';
 
@@ -61,6 +62,7 @@ export function PlanEditorScreen({ navigation, route }: Props) {
     try {
       validatePlans([plan]);
       await store.savePlan(plan);
+      runAutoBackup(store);
       navigation.goBack();
     } catch (e) {
       notify(e instanceof PlanError ? e.message : 'Der Plan konnte nicht gespeichert werden.');

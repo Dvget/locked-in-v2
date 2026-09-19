@@ -34,6 +34,7 @@ Start with:
 - [60_Workflow/AI_WORKFLOW.md](60_Workflow/AI_WORKFLOW.md)
 - [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md)
 - [60_Workflow/AUTONOMOUS_REBUILD.md](60_Workflow/AUTONOMOUS_REBUILD.md)
+- [60_Workflow/REBUILD_REVIEW.md](60_Workflow/REBUILD_REVIEW.md) — result of the autonomous rebuild, iPhone checklist
 
 ## Archive
 - `90_Archive/` — superseded material only
