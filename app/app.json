@@ -47,7 +47,8 @@
         {
           "motionPermission": "LOCKED IN 2 liest deine Schritte vom iPhone."
         }
-      ]
+      ],
+      "expo-notifications"
     ]
   }
 }

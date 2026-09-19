@@ -59,14 +59,19 @@ export function performance(samples: StrengthSample[], requiredSets: number): nu
   return samples.reduce((t, s) => t + s.weight * (1 + s.reps / 30), 0) / requiredSets;
 }
 
-/** Suggests a weight increase only when every planned set reached 12+ reps at the same weight. */
-export function suggestedWeight(samples: StrengthSample[], requiredSets: number, increment: number): number | null {
+/** Suggests a weight increase only when every planned set reached the top of the rep range (default 12) at the same weight. */
+export function suggestedWeight(
+  samples: StrengthSample[],
+  requiredSets: number,
+  increment: number,
+  topReps = 12,
+): number | null {
   if (!(requiredSets > 0) || samples.length !== requiredSets) return null;
   const first = samples[0];
   if (!first || !Number.isFinite(first.weight) || !(first.weight > 0)) return null;
   if (!Number.isFinite(increment) || !(increment > 0)) return null;
   const ok = samples.every(
-    (s) => s.reps >= 12 && Number.isFinite(s.weight) && Math.abs(s.weight - first.weight) < 0.001,
+    (s) => s.reps >= topReps && Number.isFinite(s.weight) && Math.abs(s.weight - first.weight) < 0.001,
   );
   return ok ? first.weight + increment : null;
 }
