@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useKeepAwake } from 'expo-keep-awake';
+import { useScreenAwake } from '../../native/useScreenAwake';
 
 import { Card } from '../../components/Card';
 import { Screen } from '../../components/Screen';
@@ -55,7 +55,7 @@ function confirm(title: string, message: string, action: string, onConfirm: () =
 }
 
 export function ActiveWorkout({ workout, state, onState, onExit }: Props) {
-  useKeepAwake();
+  useScreenAwake();
   const store = useStore();
   const { data, settings } = store;
   const now = useNow(500);

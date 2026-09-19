@@ -1,5 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useKeepAwake } from 'expo-keep-awake';
+import { useScreenAwake } from '../native/useScreenAwake';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Platform, StyleSheet, Text, View } from 'react-native';
 
@@ -67,7 +67,7 @@ export function RunningScreen({ navigation }: Props) {
 
   const speechEnabled = store.settings.runSpeechEnabled;
   const phase = view.active ? view.clock.phase : 'preparing';
-  useKeepAwake();
+  useScreenAwake();
 
   const begin = async () => {
     setPermissionMessage(null);

@@ -1,6 +1,6 @@
 // Minimal calm charts drawn with react-native-svg (no chart library).
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
+import { StyleSheet, Text, View, type GestureResponderEvent } from 'react-native';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop } from 'react-native-svg';
 
 import {
@@ -60,9 +60,11 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
         <Text style={styles.readoutValue}>{sel ? format(sel.point.y) : ''}</Text>
         <Text style={styles.readoutLabel}>{sel?.point.label ?? ''}</Text>
       </View>
-      <Pressable
+      <View
         onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
-        onPressIn={pick}
+        onStartShouldSetResponder={() => true}
+        onMoveShouldSetResponder={() => true}
+        onResponderGrant={pick}
         onResponderMove={pick}
         style={{ height }}
       >
@@ -89,7 +91,7 @@ export function LineChart({ points, color = colors.accent, height = 160, format 
             {sel ? <Circle cx={sel.px} cy={sel.py} r={6} fill={colors.background} stroke={color} strokeWidth={2.5} /> : null}
           </Svg>
         ) : null}
-      </Pressable>
+      </View>
     </View>
   );
 }
