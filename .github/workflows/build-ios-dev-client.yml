@@ -1,0 +1,115 @@
+name: Build iOS Dev Client (unsigned)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: app
+    env:
+      EXPO_NO_TELEMETRY: "1"
+      CI: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Expo prebuild (iOS)
+        run: npx expo prebuild --platform ios --no-install
+
+      - name: Install CocoaPods dependencies
+        working-directory: app/ios
+        run: |
+          pod --version
+          pod install
+
+      - name: Detect workspace and scheme
+        id: detect
+        working-directory: app/ios
+        run: |
+          set -euo pipefail
+
+          WORKSPACE="$(ls -d *.xcworkspace | head -n 1)"
+          if [ -z "$WORKSPACE" ]; then
+            echo "::error::No .xcworkspace found in app/ios"
+            exit 1
+          fi
+
+          xcodebuild -list -workspace "$WORKSPACE" -json > /tmp/workspace-list.json
+          xcodebuild -list -project Pods/Pods.xcodeproj -json > /tmp/pods-list.json
+
+          echo "All workspace schemes:"
+          jq -r '.workspace.schemes[]' /tmp/workspace-list.json
+
+          # The workspace lists app schemes plus every CocoaPods scheme.
+          # App schemes = workspace schemes that are not defined in Pods.xcodeproj.
+          SCHEME="$(jq -r --slurpfile pods /tmp/pods-list.json \
+            '.workspace.schemes - ($pods[0].project.schemes // []) | .[0] // empty' \
+            /tmp/workspace-list.json)"
+
+          if [ -z "$SCHEME" ]; then
+            echo "::error::No app scheme found in workspace $WORKSPACE"
+            exit 1
+          fi
+
+          echo "Workspace: $WORKSPACE"
+          echo "Selected scheme: $SCHEME"
+
+          echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
+          echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
+
+      - name: Build unsigned Debug app (iphoneos)
+        working-directory: app/ios
+        run: |
+          set -euo pipefail
+          xcodebuild \
+            -workspace "${{ steps.detect.outputs.workspace }}" \
+            -scheme "${{ steps.detect.outputs.scheme }}" \
+            -configuration Debug \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Package IPA
+        working-directory: app/ios
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find build/Build/Products/Debug-iphoneos -maxdepth 1 -name '*.app' -type d | head -n 1)"
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::No .app found in build/Build/Products/Debug-iphoneos"
+            exit 1
+          fi
+          echo "App bundle: $APP_PATH"
+
+          rm -rf Payload
+          mkdir Payload
+          cp -R "$APP_PATH" Payload/
+          zip -qry "${{ steps.detect.outputs.scheme }}-dev-client-unsigned.ipa" Payload
+
+          ls -lh ./*.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-dev-client-unsigned-ipa
+          path: app/ios/*.ipa
+          if-no-files-found: error
+          retention-days: 14
