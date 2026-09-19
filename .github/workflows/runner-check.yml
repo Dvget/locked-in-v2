@@ -1,0 +1,15 @@
+name: Runner check (Linux)
+
+# Diagnostic only: checks whether GitHub assigns a cheap Linux runner at all.
+# Used to tell "only macOS is blocked" apart from "all Actions are blocked".
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Linux runner started"
