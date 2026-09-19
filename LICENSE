@@ -1,0 +1,13 @@
+Copyright (c) 2026 Dvget. All rights reserved.
+
+This repository is publicly visible only so that its build can run on GitHub
+Actions. Being publicly visible does not grant any license. Without written
+permission from the copyright holder, you may not copy, modify, distribute,
+sublicense or otherwise use the code, documents or other content in this
+repository, except for viewing it on GitHub as allowed by GitHub's Terms of
+Service.
+
+Third-party components keep their own licenses. In particular, files that
+originate from the Expo project template are covered by the MIT License in
+app/LICENSE (Copyright (c) 2015-present 650 Industries, Inc.). Third-party
+packages installed via npm are covered by their own licenses.
