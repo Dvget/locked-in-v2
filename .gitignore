@@ -4,3 +4,6 @@ Thumbs.db
 .obsidian/workspace-mobile.json
 
 .obsidian/
+
+# Reference images stay local (Obsidian only), described as text in the docs
+20_Design/References/

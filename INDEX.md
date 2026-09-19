@@ -13,7 +13,7 @@ Start with:
 ## Design
 - [20_Design/UX_DESIGN.md](20_Design/UX_DESIGN.md)
 - [20_Design/DESIGN_REFERENCES.md](20_Design/DESIGN_REFERENCES.md)
-- `20_Design/References/` — screenshots and visual references
+- `20_Design/References/` — local-only screenshots (not in Git); described as text in DESIGN_REFERENCES.md
 
 ## Technical
 - [30_Technical/ARCHITECTURE.md](30_Technical/ARCHITECTURE.md)
