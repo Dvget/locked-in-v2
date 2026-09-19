@@ -37,9 +37,9 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 
 - Web development workflow proven (Windows, Expo Web, Metro, Claude edits local code, browser updates).
 - Expo SDK 57 + `expo-dev-client` set up.
-- GitHub repo `Dvget/locked-in-v2` (private) created; whole V2 folder is one Git repository.
-- First iOS Dev Client build (GitHub Actions run `35449440001`) is blocked; no runner is assigned. Investigated 2026-09-19: the old Legacy workflow (run `35454728582`) and a Linux-only test (run `35454795525`) fail with the same message, so the block affects the whole GitHub account, not the V2 repo, the workflow file or macOS only. Cause found (GitHub billing page): the Free plan's monthly quota of 2,000 Actions minutes is used up (2,000 / 2,000), mostly by the legacy repo; it resets in about 12 days. Options: wait for the reset, make the repo public (free Actions), or add a paid budget (conflicts with D-008; only with the user's consent). Not yet decided. Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md).
-- Native iOS Dev Client feasibility remains open (unsigned IPA, SideStore install, iPhone Fast Refresh, native capabilities).
+- GitHub repo `Dvget/locked-in-v2` created (currently public for free builds); whole V2 folder is one Git repository.
+- First iOS Dev Client build succeeded on 2026-09-19 (run `35457817569`, about 5 minutes) after the repo was made public; the earlier block was the exhausted free private-repo quota. The GitHub build produces an unsigned IPA and a SideStore release. Install on the iPhone, Metro connection and Fast Refresh are still unverified. Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md).
+- Still open: SideStore install of the IPA, Dev Client connection to Metro, iPhone Fast Refresh, native capabilities (location, HealthKit, Live Activities, audio/haptics).
 - A sensible next product/development step can begin in parallel via Expo Web.
 
 ## App scaffold status (2026-09-19)
@@ -57,8 +57,8 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 
 Keep this list current after every larger work block. A new chat starts from here.
 
-1. First iOS Dev Client proof: run `Build iOS Dev Client (unsigned)` on GitHub (repo is temporarily public for free Actions minutes), install the IPA via SideStore. App display name is "LOCKED IN 2", bundle id `app.lockedin.v2` (separate from the legacy app `app.lockedin.tracker`, so it does not overwrite it).
-2. After a successful proof: set the repo back to private (user does this in GitHub Settings) and decide how to keep builds cheap.
+1. First iOS Dev Client proof: the GitHub build works (run `35457817569`, success, release `build-2`). Still to do: install the IPA via SideStore (source URL in `60_Workflow/SETUP_LOG_2026-09-19.md`), connect the Dev Client to Metro on the PC, check Fast Refresh. App display name is "LOCKED IN 2", bundle id `app.lockedin.v2` (separate from the legacy app `app.lockedin.tracker`, so it does not overwrite it).
+2. Decide about repo visibility: the SideStore source and IPA are served from public GitHub release files, so they stop working if the repo goes private again. Options: keep the repo public (license: all rights reserved), or build in a private repo and publish to a separate public distribution repo like the legacy project did.
 3. Rebuild the legacy app 1:1 in slices while applying V2 decisions; order and mapping in `40_Migration/LEGACY_TO_V2_MAP.md`. Open decision: persistence technology (recommended: local database on the phone).
 4. Open: whether to rename the app back to "LOCKED IN" later (display name is easy to change; the bundle id decides whether it replaces the old app or installs next to it).
 

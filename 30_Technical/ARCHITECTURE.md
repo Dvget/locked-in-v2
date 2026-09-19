@@ -41,11 +41,10 @@ Confirmed:
 - Metro (including `--dev-client` mode);
 - Claude works directly on local code.
 
-Blocker for the native proof (2026-09-19): the Free plan's monthly quota of 2,000 Actions minutes is used up, so GitHub assigns no runner (macOS or Linux) to this account; not caused by the V2 repo or workflow. Resets about 12 days later. See [60_Workflow/SETUP_LOG_2026-09-19.md](../60_Workflow/SETUP_LOG_2026-09-19.md).
+Native proof (2026-09-19): the GitHub build (Expo prebuild, CocoaPods, xcodebuild, unsigned IPA, SideStore release) works on macOS. The earlier block was the exhausted free quota for private repos; public repos have free Actions minutes. Details: [60_Workflow/SETUP_LOG_2026-09-19.md](../60_Workflow/SETUP_LOG_2026-09-19.md).
 
 Still open:
-- unsigned Dev Client IPA;
-- SideStore installation;
+- SideStore installation of the unsigned IPA (IPA itself is built);
 - real iPhone Fast Refresh;
 - native iOS features.
 
