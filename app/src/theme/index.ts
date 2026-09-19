@@ -12,6 +12,10 @@ export const colors = {
   runningSoft: 'rgba(157, 123, 255, 0.14)',
   runningBorder: 'rgba(157, 123, 255, 0.32)',
   trendNeutral: '#c7c7cc',
+  good: '#34c759',
+  warn: '#ffcc00',
+  bad: '#ff453a',
+  fill: '#2c2c2e',
 } as const;
 
 export const spacing = {
@@ -46,3 +50,19 @@ export const typography = {
     fontWeight: '600',
   },
 } as const;
+
+import type { Status } from '../domain/analytics';
+
+/** Traffic-light semantics as a small accent only (D-042). */
+export function toneColor(status: Status | null | undefined): string {
+  switch (status) {
+    case 'green':
+      return colors.good;
+    case 'yellow':
+      return colors.warn;
+    case 'red':
+      return colors.bad;
+    default:
+      return colors.textMuted;
+  }
+}
