@@ -44,6 +44,16 @@ Rebuild the legacy app (`Dvget/locked-in`, branch `codex/locked-in-0.8.8`, read-
 - At most 5 builds in total. The build publishes a release and updates the SideStore feed automatically.
 - Check the run before continuing. Never leave a failing workflow behind.
 
+## Keep commands simple (fewer permission prompts)
+
+The user may not be at the PC. Shell commands that contain subshells (`$(...)`, backticks), several commands chained with `&&`/`;`, pipes into other tools, or heredocs trigger a manual approval even in permissive modes, and they cannot be "always allowed". So:
+
+- Use one simple command per call. Store values in files or read them from a previous result instead of using `$(...)`.
+- Prefer the dedicated tools over the shell: Read, Write, Edit, Glob, Grep for files and search.
+- Use plain `git add <paths>`, `git commit -m "..."`, `git push origin main` as separate calls.
+- Do not use `cd ... &&` chains; use absolute paths or the tool's working directory.
+- Do not write helper scripts only to bundle several commands.
+
 ## No questions: how to decide
 
 If something is unclear, pick the simplest option that fits `PROJECT.md` and `DECISIONS.md`, write it into the review list, and continue. Ask only if continuing would break a guardrail.
