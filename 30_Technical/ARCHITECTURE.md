@@ -41,6 +41,8 @@ Confirmed:
 - Metro (including `--dev-client` mode);
 - Claude works directly on local code.
 
+Blocker for the native proof (2026-09-19): GitHub does not assign any Actions runner (macOS and Linux) for this account; not caused by the V2 repo or workflow. See [60_Workflow/SETUP_LOG_2026-09-19.md](../60_Workflow/SETUP_LOG_2026-09-19.md).
+
 Still open:
 - unsigned Dev Client IPA;
 - SideStore installation;

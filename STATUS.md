@@ -38,7 +38,7 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 - Web development workflow proven (Windows, Expo Web, Metro, Claude edits local code, browser updates).
 - Expo SDK 57 + `expo-dev-client` set up.
 - GitHub repo `Dvget/locked-in-v2` (private) created; whole V2 folder is one Git repository.
-- First iOS Dev Client build (GitHub Actions run `35449440001`) is blocked by GitHub Billing / Spending Limit; the macOS runner never started.
+- First iOS Dev Client build (GitHub Actions run `35449440001`) is blocked; no runner is assigned. Investigated 2026-09-19: the old Legacy workflow (run `35454728582`) and a Linux-only test (run `35454795525`) fail with the same message, so the block affects the whole GitHub account, not the V2 repo, the workflow file or macOS only. Billing API shows net 0 USD, so "free quota used up" is not proven. Cause still open; needs a check in the GitHub billing web pages. Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md).
 - Native iOS Dev Client feasibility remains open (unsigned IPA, SideStore install, iPhone Fast Refresh, native capabilities).
 - A sensible next product/development step can begin in parallel via Expo Web.
 
