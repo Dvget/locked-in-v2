@@ -1,0 +1,35 @@
+# LOCKED IN V2 — INDEX
+
+Start with:
+- [PROJECT.md](PROJECT.md)
+- [STATUS.md](STATUS.md)
+- [DECISIONS.md](DECISIONS.md)
+
+## Product
+- [10_Product/PRODUCT.md](10_Product/PRODUCT.md)
+- [10_Product/SCREENS_AND_FLOWS.md](10_Product/SCREENS_AND_FLOWS.md)
+- [10_Product/FUTURE.md](10_Product/FUTURE.md)
+
+## Design
+- [20_Design/UX_DESIGN.md](20_Design/UX_DESIGN.md)
+- [20_Design/DESIGN_REFERENCES.md](20_Design/DESIGN_REFERENCES.md)
+- `20_Design/References/` — screenshots and visual references
+
+## Technical
+- [30_Technical/ARCHITECTURE.md](30_Technical/ARCHITECTURE.md)
+- [30_Technical/DATA_MODEL.md](30_Technical/DATA_MODEL.md)
+- [30_Technical/DATA_BACKUP.md](30_Technical/DATA_BACKUP.md)
+
+## Migration
+- [40_Migration/MIGRATION.md](40_Migration/MIGRATION.md)
+- [40_Migration/LEGACY_REFERENCE.md](40_Migration/LEGACY_REFERENCE.md)
+
+## Validation
+- [50_Validation/RUNNING_VALIDATION.md](50_Validation/RUNNING_VALIDATION.md)
+- [50_Validation/METRICS_AND_INDEXES.md](50_Validation/METRICS_AND_INDEXES.md)
+
+## Workflow
+- [60_Workflow/AI_WORKFLOW.md](60_Workflow/AI_WORKFLOW.md)
+
+## Archive
+- `90_Archive/` — superseded material only
