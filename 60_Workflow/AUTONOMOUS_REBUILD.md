@@ -10,7 +10,7 @@ Rebuild the legacy app (`Dvget/locked-in`, branch `codex/locked-in-0.8.8`, read-
 
 1. Clone the legacy repo into a scratch folder outside this repo (read-only) and read the relevant Swift files and tests for the slice.
 2. Port logic as pure TypeScript with tests (add `vitest` as dev dependency in slice 1). Port the matching legacy tests.
-3. Build the UI on top, following `20_Design/UX_DESIGN.md` and the existing theme. German UI strings, English code identifiers.
+3. Build the UI on top, following `20_Design/UX_DESIGN.md`, `20_Design/DESIGN_FINDINGS_2026-09-19.md` (legacy design tokens are canonical, D-050) and the existing theme. German UI strings, English code identifiers.
 4. Verify: `npx tsc --noEmit`, tests green, web check of the affected screens (Expo web, real browser check where possible).
 5. Commit in small logical commits with a clear message, push to `origin/main`.
 6. Update `STATUS.md` ("Next steps" progress) and the status column in `LEGACY_TO_V2_MAP.md`. Record any new decision in `DECISIONS.md` as **provisional** (next free ID).

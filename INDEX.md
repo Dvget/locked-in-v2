@@ -13,6 +13,7 @@ Start with:
 ## Design
 - [20_Design/UX_DESIGN.md](20_Design/UX_DESIGN.md)
 - [20_Design/DESIGN_REFERENCES.md](20_Design/DESIGN_REFERENCES.md)
+- [20_Design/DESIGN_FINDINGS_2026-09-19.md](20_Design/DESIGN_FINDINGS_2026-09-19.md) — legacy design tokens, design exploration results, open design questions
 - `20_Design/References/` — local-only screenshots (not in Git); described as text in DESIGN_REFERENCES.md
 
 ## Technical

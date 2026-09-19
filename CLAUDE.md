@@ -40,6 +40,10 @@ The repo root is both the Obsidian vault (the "project brain": Markdown docs) an
 - Styling tokens are in `src/theme` (colors incl. orange brand accent and violet running accent, spacing, radius, typography). Dark mode only (`userInterfaceStyle: "dark"`).
 - Workout, Running, Progress, Settings and Weekly Report screens are still placeholders.
 
+## Design
+
+Before changing colors, cards or spacing, read `20_Design/DESIGN_FINDINGS_2026-09-19.md` (D-050): the legacy design tokens are canonical, the legacy look is the base, and changes are conservative. Design variants can be explored with the Claude Design canvas (see the process notes there).
+
 ## Porting from the legacy app
 
 The functional reference is the SwiftUI app `Dvget/locked-in` (branch `codex/locked-in-0.8.8`, read-only). `40_Migration/LEGACY_TO_V2_MAP.md` maps every legacy area to its V2 target and status. Port behavior, not code. V2 decisions in `DECISIONS.md` override legacy behavior. Polar AccessLink and the Cloudflare worker are permanently discarded (D-049); do not port the legacy elevation gain/loss logic (Issue #19).
