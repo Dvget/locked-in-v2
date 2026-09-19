@@ -23,6 +23,7 @@ Start with:
 ## Migration
 - [40_Migration/MIGRATION.md](40_Migration/MIGRATION.md)
 - [40_Migration/LEGACY_REFERENCE.md](40_Migration/LEGACY_REFERENCE.md)
+- [40_Migration/LEGACY_TO_V2_MAP.md](40_Migration/LEGACY_TO_V2_MAP.md)
 
 ## Validation
 - [50_Validation/RUNNING_VALIDATION.md](50_Validation/RUNNING_VALIDATION.md)

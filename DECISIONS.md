@@ -47,7 +47,7 @@ This file records explicit project decisions. Do not silently overwrite these de
 | D-041 | open for review | Training accent color is not yet decided. |
 | D-042 | fixed | Large color-filled sections are not desired; color should mainly act as an accent. |
 | D-043 | fixed | Future architecture should allow user-created custom exercises. |
-| D-044 | future | Running route maps may be added later. |
+| D-044 | future | A route map in Running mode (Strava-style, live and/or after the run) may be added later. Only the foundation is prepared now: raw GPS track points are stored per run, separate from derived metrics. No map UI, no map library and no map technology choice yet; it is undecided whether the feature ever ships. |
 | D-045 | future | A web dashboard/interface may be added later as a learning/extension project. |
 | D-046 | future | Training plans may later visualize muscle-group coverage. |
 | D-047 | future | Progress may later aggregate exercise progress by muscle group, without pretending to directly measure muscle growth. |
