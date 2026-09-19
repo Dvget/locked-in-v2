@@ -16,6 +16,8 @@ Treat legacy LOCKED IN code and the old Obsidian workspace as read-only referenc
 
 Do not duplicate project truth in this file. `PROJECT.md` is authoritative for collaboration rules.
 
+**If the user asks to rebuild the app (autonomous rebuild):** follow `60_Workflow/AUTONOMOUS_REBUILD.md` exactly. It is the work order: no intermediate questions, defaults for open decisions, guardrails, build limits.
+
 ## Repository layout
 
 The repo root is both the Obsidian vault (the "project brain": Markdown docs) and the Git repository. The React Native / Expo SDK 57 app lives in `app/`. Everything below is run from `app/` unless noted.
