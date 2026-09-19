@@ -16,10 +16,14 @@ import {
   stepComparisonChange,
   stepProgressStatus,
   weeklyGoalStatus,
+  weeklyRunChange,
+  rollingCompletedStepAverage,
   weekToDateCountComparison,
   weightPoints,
   type Status,
 } from './analytics';
+import { isRepsOnlyExercise } from './exercises';
+import { weeklyProgress } from './strength';
 import { computeAchievements, type Achievement } from './achievements';
 import type { AppData, Settings, WeightDirection } from '../data/repository';
 
@@ -40,6 +44,9 @@ export interface DashboardModel {
   workoutGoalStatus: Status;
   runGoalStatus: Status;
   workoutChange: number | null;
+  weekProgress: number | null;
+  runWeekChange: number | null;
+  stepCardAverage: number | null;
   stepChange: number | null;
   lastAchievement: Achievement | null;
   hasAnyData: boolean;
@@ -163,6 +170,9 @@ export function buildDashboard(data: AppData, settings: Settings, now: Ms = Date
     workoutGoalStatus,
     runGoalStatus,
     workoutChange,
+    weekProgress: weeklyProgress(data.workouts, data.sets, now, isRepsOnlyExercise),
+    runWeekChange: weeklyRunChange(runs.map((r) => ({ date: r.date, distanceKm: r.distanceKm, durationSeconds: r.durationSeconds })), now),
+    stepCardAverage: stepAverage ?? rollingCompletedStepAverage(stepSamples, 28, now),
     stepChange,
     lastAchievement,
     hasAnyData: workouts.length + runs.length + weights.length + data.steps.length > 0,

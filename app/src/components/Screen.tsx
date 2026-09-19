@@ -5,13 +5,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '../theme';
 
 type Props = {
+  gap?: number;
+  padding?: number;
   children: ReactNode;
 };
 
-export function Screen({ children }: Props) {
+export function Screen({ children, gap = spacing.md, padding = spacing.md }: Props) {
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
-      <ScrollView contentContainerStyle={styles.content}>{children}</ScrollView>
+      <ScrollView contentContainerStyle={[styles.content, { padding, gap }]}>{children}</ScrollView>
     </SafeAreaView>
   );
 }

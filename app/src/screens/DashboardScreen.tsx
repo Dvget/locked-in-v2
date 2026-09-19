@@ -2,21 +2,20 @@ import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { CompositeScreenProps } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
 
 import { Screen } from '../components/Screen';
 import { WeightEntrySheet } from '../components/WeightEntrySheet';
 import { AchievementCard } from '../components/dashboard/AchievementCard';
-import { ActionTile } from '../components/dashboard/ActionTile';
 import { DashboardHeader } from '../components/dashboard/DashboardHeader';
+import { CategoryCard, CompactCard, StartCard } from '../components/dashboard/HomeCards';
 import { ResumeCard } from '../components/dashboard/ResumeCard';
-import { TrainingTrendCard } from '../components/dashboard/TrainingTrendCard';
-import { WeekSummaryCard } from '../components/dashboard/WeekSummaryCard';
 import { WeeklyReportCard } from '../components/dashboard/WeeklyReportCard';
-import { WeightTrendCard } from '../components/dashboard/WeightTrendCard';
+import { DumbbellIcon, PlayIcon, RunnerIcon, StepsIcon, WeightIcon } from '../components/icons';
 import { useStore } from '../data/store';
-import { buildWeeklyReport, weekKey } from '../domain/weeklyReport';
-import { buildDashboard, formatDistanceKm, formatKgText, formatSignedKg, formatSteps } from '../domain/dashboard';
+import { dailyStepStatus } from '../domain/analytics';
+import { buildDashboard, formatKgText, formatSignedKg, formatSteps } from '../domain/dashboard';
+import { progressBand, progressText } from '../domain/strength';
+import { buildWeeklyReport, percentText, weekKey } from '../domain/weeklyReport';
 import { colors, toneColor } from '../theme';
 import type { RootStackParamList, TabParamList } from '../types/navigation';
 
@@ -24,13 +23,6 @@ type Props = CompositeScreenProps<
   BottomTabScreenProps<TabParamList, 'Dashboard'>,
   NativeStackScreenProps<RootStackParamList>
 >;
-
-const TREND_TEXT = {
-  up: 'Trend: steigend',
-  flat: 'Trend: gleichbleibend',
-  down: 'Trend: sinkend',
-  none: 'Noch keine Einheiten',
-} as const;
 
 export function DashboardScreen({ navigation }: Props) {
   const { data, settings, updateSettings, ready } = useStore();
@@ -47,88 +39,88 @@ export function DashboardScreen({ navigation }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  const runInfo =
-    model.runsThisWeek === 0
-      ? `0 von ${settings.runsPerWeek} diese Woche`
-      : `${model.runsThisWeek} von ${settings.runsPerWeek} · ${formatDistanceKm(model.runDistanceThisWeek)}`;
+  const toProgress = () => navigation.navigate('Tabs', { screen: 'Progress' });
+
+  // Workouts card: goal progress plus the weekly strength index.
+  const bandColor = (delta: number | null) => {
+    if (delta === null) return colors.textMuted;
+    const band = progressBand(delta);
+    return band === 'improved' ? colors.good : band === 'declined' ? colors.bad : colors.warn;
+  };
+  const workoutDetail = model.weekProgress !== null ? `Wochenfortschritt ${progressText(model.weekProgress)}` : 'Noch kein Vergleich';
+  const runDetail =
+    model.runWeekChange !== null ? `${percentText(model.runWeekChange)} zur Vorwoche` : 'Noch kein Vergleich zur Vorwoche';
+
+  const stepValue = model.stepCardAverage !== null ? `Ø ${formatSteps(model.stepCardAverage)}` : '–';
+  const stepColor = model.stepCardAverage !== null ? toneColor(dailyStepStatus(model.stepCardAverage)) : colors.textMuted;
 
   return (
-    <Screen>
+    <Screen padding={14} gap={10}>
       <DashboardHeader />
 
-      <ResumeCard
-        onResumeWorkout={() => navigation.navigate('Workout')}
-        onResumeRun={() => navigation.navigate('Running')}
+      <ResumeCard onResumeWorkout={() => navigation.navigate('Workout')} onResumeRun={() => navigation.navigate('Running')} />
+
+      <StartCard
+        title="Workout starten"
+        accent={colors.accent}
+        icon={<PlayIcon color="#000" />}
+        onPress={() => navigation.navigate('Workout')}
+      />
+      <StartCard
+        title="Lauf starten"
+        accent={colors.running}
+        icon={<PlayIcon color="#000" />}
+        onPress={() => navigation.navigate('Running')}
       />
 
-      <View style={styles.actions}>
-        <ActionTile
-          label="Training"
-          title="Workout starten"
-          info={`${model.workoutsThisWeek} von ${settings.workoutsPerWeek} diese Woche`}
-          accent={colors.accent}
-          accentSoft={colors.accentSoft}
-          accentBorder={colors.accentBorder}
-          onPress={() => navigation.navigate('Workout')}
-        />
-        <ActionTile
-          label="Running"
-          title="Lauf starten"
-          info={runInfo}
-          accent={colors.running}
-          accentSoft={colors.runningSoft}
-          accentBorder={colors.runningBorder}
-          onPress={() => navigation.navigate('Running')}
-        />
-      </View>
-
-      <WeekSummaryCard
-        metrics={[
-          { label: 'Training', value: String(model.workoutsThisWeek) },
-          { label: 'Läufe', value: String(model.runsThisWeek) },
-          {
-            label: 'Schritte',
-            value: model.stepsThisWeek > 0 ? formatSteps(model.stepsThisWeek) : '–',
-            color: model.stepStatus ? toneColor(model.stepStatus) : undefined,
-          },
-          {
-            label: 'Gewicht',
-            value: model.latestWeightKg !== null ? formatKgText(model.latestWeightKg) : '–',
-            unit: model.latestWeightKg !== null ? 'kg' : undefined,
-          },
-        ]}
+      <CategoryCard
+        label="Workouts"
+        value={`${model.workoutsThisWeek} / ${settings.workoutsPerWeek}`}
+        detail={workoutDetail}
+        valueColor={toneColor(model.workoutGoalStatus)}
+        detailColor={bandColor(model.weekProgress)}
+        accent={colors.accent}
+        icon={<DumbbellIcon color={colors.accent} />}
+        onPress={toProgress}
       />
-
-      <WeightTrendCard
-        value={model.latestWeightKg !== null ? `${formatKgText(model.latestWeightKg)} kg` : 'Kein Gewicht'}
-        change={
-          model.weightChange4Weeks !== null
-            ? `${formatSignedKg(model.weightChange4Weeks)} kg in 4 Wochen`
-            : 'Trage dein Gewicht ein, um den Verlauf zu sehen'
+      <CategoryCard
+        label="Runs"
+        value={`${model.runsThisWeek} / ${settings.runsPerWeek}`}
+        detail={runDetail}
+        valueColor={toneColor(model.runGoalStatus)}
+        detailColor={bandColor(model.runWeekChange)}
+        accent={colors.running}
+        icon={<RunnerIcon color={colors.running} />}
+        onPress={toProgress}
+      />
+      <CategoryCard
+        label="Steps"
+        value={stepValue}
+        detail={settings.stepsEnabled || model.stepCardAverage !== null ? 'Wochenschnitt' : 'In den Zielen aktivieren'}
+        valueColor={stepColor}
+        detailColor={colors.textMuted}
+        accent={colors.trendNeutral}
+        tileColor={colors.cardSecondary}
+        icon={<StepsIcon color="rgba(255,255,255,0.85)" />}
+        onPress={() => navigation.navigate('Goals')}
+      />
+      <CompactCard
+        title="Gewicht"
+        detail={
+          model.latestWeightKg !== null
+            ? `${formatKgText(model.latestWeightKg)} kg${model.weightChange4Weeks !== null ? ` · ${formatSignedKg(model.weightChange4Weeks)} kg in 4 Wochen` : ''}`
+            : 'Tippen zum Eintragen'
         }
-        changeColor={model.weightTone ? toneColor(model.weightTone) : undefined}
-        points={model.weightSeries}
+        detailColor={model.weightTone ? toneColor(model.weightTone) : undefined}
+        icon={<WeightIcon color="rgba(255,255,255,0.8)" />}
         onPress={() => setWeightSheet(true)}
-      />
-      <TrainingTrendCard
-        summary={`${model.trainingTotal4Weeks} Einheiten in 4 Wochen`}
-        trend={TREND_TEXT[model.trainingTrend]}
-        weeklyCounts={model.trainingCounts4Weeks}
       />
 
       <WeeklyReportCard onPress={() => navigation.navigate('WeeklyReport')} />
 
-      {model.lastAchievement ? (
-        <AchievementCard title={model.lastAchievement.title} value={model.lastAchievement.value} />
-      ) : null}
+      {model.lastAchievement ? <AchievementCard title={model.lastAchievement.title} value={model.lastAchievement.value} /> : null}
+
       <WeightEntrySheet visible={weightSheet} onClose={() => setWeightSheet(false)} />
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  actions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-});
