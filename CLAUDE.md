@@ -61,4 +61,5 @@ The functional reference is the SwiftUI app `Dvget/locked-in` (branch `codex/loc
 - Explain in plain German, short, and say in one sentence what any technical term means.
 - Create files with the Write tool rather than shell heredocs; quotes/apostrophes in heredocs broke a command earlier.
 - After substantial work, update `STATUS.md` (and `DECISIONS.md` only for real decisions). Keep the "Next steps" section of `STATUS.md` current: it is the handoff to the next chat.
-- Chat handoff: when a chat gets long (around 60-70 % of the context window) or a work block ends, update `STATUS.md`, tell the user a fresh chat is a good idea, and remind them that the new chat starts by reading the project files.
+- Two standing chats, Coding and Planung, each with its own handoff and write scope: see `60_Workflow/AI_WORKFLOW.md` ("Two standing chats"). Only the Coding chat edits `app/` and `DECISIONS.md`.
+- Chat handoff: when a chat gets long (around 60-70 % of the context window) or a work block ends, update its handoff file (`STATUS.md` for Coding, `60_Workflow/PLANNING_STATUS.md` for Planung), tell the user a fresh chat is a good idea, and remind them that the new chat starts by reading the project files.

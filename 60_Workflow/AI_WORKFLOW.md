@@ -68,6 +68,22 @@ The project files should answer:
 - What is authoritative?
 - What must not be changed?
 
+## Two standing chats (fixed by the user, 2026-09-25)
+
+The project runs in exactly two chats. Both are restarted often; each starts by reading the project files and its own handoff.
+
+| Chat | Scope | May write | Handoff file |
+|---|---|---|---|
+| **Coding** | app code, screen-by-screen functional review, builds, tests, iPhone fixes | `app/`, `STATUS.md`, `DECISIONS.md`, `30_Technical/`, `40_Migration/`, `50_Validation/`, `.github/` | `STATUS.md` ("Next steps") |
+| **Planung** (everything else) | design direction and canvas, ideas and future features, tools and workflow (MCP, Obsidian, AI setup), onboarding concept | `20_Design/`, `10_Product/`, `60_Workflow/` except work orders the Coding chat executes | `60_Workflow/PLANNING_STATUS.md` |
+
+Rules:
+
+- Only the Coding chat changes code and writes `DECISIONS.md`. The Planung chat writes proposals ("Vorschlag") into its handoff file or the domain file; the user confirms, then the Coding chat records the decision and builds it.
+- The Planung chat may read everything, including `app/` and the legacy repo, but does not edit them.
+- Before every commit: `git pull`, then `git add` only your own paths. Never rewrite the other chat's lines.
+- Hand-over between the chats goes through the files, never through copying chat text.
+
 ## Several chats at the same time (lessons, 2026-09-19 to 2026-09-25)
 
 - One chat owns the code in `app/`. Another chat may own docs or design, but two chats never edit the same files.

@@ -31,7 +31,8 @@ Start with:
 - [50_Validation/METRICS_AND_INDEXES.md](50_Validation/METRICS_AND_INDEXES.md)
 
 ## Workflow
-- [60_Workflow/AI_WORKFLOW.md](60_Workflow/AI_WORKFLOW.md)
+- [60_Workflow/AI_WORKFLOW.md](60_Workflow/AI_WORKFLOW.md) — includes the two standing chats (Coding, Planung)
+- [60_Workflow/PLANNING_STATUS.md](60_Workflow/PLANNING_STATUS.md) — handoff of the Planung chat (design, ideas, tools)
 - [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.md)
 - [60_Workflow/AUTONOMOUS_REBUILD.md](60_Workflow/AUTONOMOUS_REBUILD.md)
 - [60_Workflow/REBUILD_REVIEW.md](60_Workflow/REBUILD_REVIEW.md) — result of the autonomous rebuild, iPhone checklist

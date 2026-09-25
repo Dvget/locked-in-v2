@@ -57,7 +57,7 @@ Details: [60_Workflow/SETUP_LOG_2026-09-19.md](60_Workflow/SETUP_LOG_2026-09-19.
 
 Keep this list current after every larger work block. A new chat starts from here.
 
-**Handoff, updated 2026-09-25 (read this first).** Another chat may update this file in parallel: pull before editing, change only your own lines.
+**Handoff of the Coding chat, updated 2026-09-25 (read this first).** Since 2026-09-25 the project runs in two chats: **Coding** (this file) and **Planung** (design, ideas, tools; handoff in `60_Workflow/PLANNING_STATUS.md`). Rules: `60_Workflow/AI_WORKFLOW.md`, "Two standing chats". Design and ideas items below are kept for context; the Planung chat owns them now.
 
 - The autonomous rebuild is done and was reviewed once by the user ("technically good, close to the old state, much better environment"). Details and the iPhone checklist: `60_Workflow/REBUILD_REVIEW.md`. Builds used: 2 of 5 (latest release `build-5`).
 - **Corrections from the first review are in** (D-052 revised): one start card leading to "Workout oder Run?"; the cards Workouts, Runs, Steps and Gewicht open their own detail screens with a last-4-weeks graph; no invented Dashboard tiles. Screens rebuilt after the legacy SwiftUI code and the two real legacy renders: Dashboard, choice screen, four detail screens, Progress > Training card, active workout, plan picker, Settings, run preparation/active/summary.
